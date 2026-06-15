@@ -1,0 +1,30 @@
+[
+  {
+    "id": "payload_action_camera",
+    "category": "payload",
+    "name": "Compact Action Camera",
+    "brand": "DroneLab",
+    "description": "Generic stabilized action camera payload with mount.",
+    "priceUsd": 199,
+    "weightG": 126,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["action-camera", "cinematic", "payload"],
+    "payloadType": "action_camera",
+    "dimensions": { "lengthMm": 71, "widthMm": 51, "heightMm": 34 }
+  },
+  {
+    "id": "payload_sensor_100g",
+    "category": "payload",
+    "name": "100g Sensor Payload",
+    "brand": "DroneLab",
+    "description": "Placeholder mass for evaluating a small robotics sensor package.",
+    "priceUsd": 0,
+    "weightG": 100,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["sensor", "robotics", "payload"],
+    "payloadType": "sensor",
+    "dimensions": { "lengthMm": 60, "widthMm": 45, "heightMm": 25 }
+  }
+]

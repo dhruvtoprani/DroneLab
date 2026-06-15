@@ -1,0 +1,38 @@
+[
+  {
+    "id": "build_balanced_freestyle",
+    "name": "Balanced 5-Inch Freestyle",
+    "goal": "freestyle",
+    "budgetUsd": 450,
+    "parts": {
+      "frame": "frame_5in_carbon_freestyle",
+      "motor": "motor_2207_1750kv",
+      "propeller": "prop_5x43x3",
+      "battery": "battery_6s_1300mah_100c",
+      "esc": "esc_45a_4in1_30x30",
+      "flight_controller": "fc_f7_30x30",
+      "camera": "camera_micro_fpv",
+      "receiver": "receiver_elrs_24_nano",
+      "vtx": "vtx_800mw_20x20",
+      "antenna": "antenna_58_lhcp_stubby"
+    }
+  },
+  {
+    "id": "build_light_racer",
+    "name": "Lightweight 4S Racer",
+    "goal": "racing",
+    "budgetUsd": 400,
+    "parts": {
+      "frame": "frame_5in_light_racing",
+      "motor": "motor_2207_2450kv",
+      "propeller": "prop_5x5x3",
+      "battery": "battery_4s_1500mah_100c",
+      "esc": "esc_35a_4in1_20x20",
+      "flight_controller": "fc_f4_20x20",
+      "camera": "camera_nano_racing",
+      "receiver": "receiver_elrs_24_nano",
+      "vtx": "vtx_400mw_micro",
+      "antenna": "antenna_58_lhcp_light"
+    }
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "camera_micro_fpv",
+    "category": "camera",
+    "name": "Micro Low-Latency FPV Camera",
+    "brand": "DroneLab",
+    "description": "Compact analog camera with a wide dynamic range sensor.",
+    "priceUsd": 35,
+    "weightG": 8,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["micro", "analog", "low-latency"],
+    "cameraSize": "micro",
+    "aspectRatio": "switchable",
+    "dimensions": { "widthMm": 19, "heightMm": 19, "depthMm": 21 }
+  },
+  {
+    "id": "camera_nano_racing",
+    "category": "camera",
+    "name": "Nano Racing FPV Camera",
+    "brand": "DroneLab",
+    "description": "Lightweight nano camera for narrow racing cages.",
+    "priceUsd": 29,
+    "weightG": 4.5,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["nano", "racing", "lightweight"],
+    "cameraSize": "nano",
+    "aspectRatio": "4:3",
+    "dimensions": { "widthMm": 14, "heightMm": 14, "depthMm": 17 }
+  }
+]

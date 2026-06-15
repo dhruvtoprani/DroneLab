@@ -1,0 +1,34 @@
+[
+  {
+    "id": "receiver_elrs_24_nano",
+    "category": "receiver",
+    "name": "2.4GHz Long-Range Nano Receiver",
+    "brand": "DroneLab",
+    "description": "Compact serial receiver with strong range and low latency.",
+    "priceUsd": 18,
+    "weightG": 1.2,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["2.4GHz", "serial", "nano"],
+    "protocol": "CRSF-compatible",
+    "rangeClass": "long",
+    "voltageMin": 5,
+    "voltageMax": 5
+  },
+  {
+    "id": "receiver_basic_serial",
+    "category": "receiver",
+    "name": "Basic Serial Receiver",
+    "brand": "DroneLab",
+    "description": "Simple short-to-medium range receiver for beginner builds.",
+    "priceUsd": 12,
+    "weightG": 2.1,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["serial", "beginner", "budget"],
+    "protocol": "SBUS-compatible",
+    "rangeClass": "medium",
+    "voltageMin": 3.3,
+    "voltageMax": 5
+  }
+]

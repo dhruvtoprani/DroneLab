@@ -1,0 +1,32 @@
+[
+  {
+    "id": "antenna_58_lhcp_stubby",
+    "category": "antenna",
+    "name": "5.8GHz LHCP Stubby Antenna",
+    "brand": "DroneLab",
+    "description": "Durable short circular-polarized antenna for freestyle use.",
+    "priceUsd": 15,
+    "weightG": 8,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["5.8GHz", "LHCP", "MMCX"],
+    "connector": "MMCX",
+    "polarization": "LHCP",
+    "frequencyGhz": 5.8
+  },
+  {
+    "id": "antenna_58_lhcp_light",
+    "category": "antenna",
+    "name": "5.8GHz LHCP Lightweight Antenna",
+    "brand": "DroneLab",
+    "description": "Low-mass circular-polarized antenna for compact aircraft.",
+    "priceUsd": 12,
+    "weightG": 3.5,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["5.8GHz", "LHCP", "U.FL"],
+    "connector": "U.FL",
+    "polarization": "LHCP",
+    "frequencyGhz": 5.8
+  }
+]

@@ -1,0 +1,71 @@
+[
+  {
+    "id": "motor_2207_1750kv",
+    "category": "motor",
+    "name": "2207 1750KV Motor",
+    "brand": "DroneLab",
+    "description": "Balanced 6S motor for a responsive 5-inch freestyle build.",
+    "priceUsd": 24,
+    "weightG": 33.5,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["2207", "6S", "freestyle"],
+    "kv": 1750,
+    "statorSize": "2207",
+    "supportedCellMin": 4,
+    "supportedCellMax": 6,
+    "maxCurrentA": 40,
+    "shaftDiameterMm": 5,
+    "mountPattern": "16x16",
+    "thrustTests": [
+      { "propellerId": "prop_5x43x3", "cellCount": 6, "maxThrustG": 700, "maxCurrentA": 38, "hoverCurrentAEstimate": 2.1 },
+      { "propellerId": "prop_5x5x3", "cellCount": 6, "maxThrustG": 840, "maxCurrentA": 44, "hoverCurrentAEstimate": 2.4 },
+      { "propellerId": "prop_5x43x3", "cellCount": 4, "maxThrustG": 650, "maxCurrentA": 25, "hoverCurrentAEstimate": 1.8 }
+    ]
+  },
+  {
+    "id": "motor_2207_2450kv",
+    "category": "motor",
+    "name": "2207 2450KV Motor",
+    "brand": "DroneLab",
+    "description": "High-KV 4S motor tuned for aggressive racing response.",
+    "priceUsd": 23,
+    "weightG": 32,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["2207", "4S", "racing"],
+    "kv": 2450,
+    "statorSize": "2207",
+    "supportedCellMin": 3,
+    "supportedCellMax": 4,
+    "maxCurrentA": 46,
+    "shaftDiameterMm": 5,
+    "mountPattern": "16x16",
+    "thrustTests": [
+      { "propellerId": "prop_5x43x3", "cellCount": 4, "maxThrustG": 850, "maxCurrentA": 39, "hoverCurrentAEstimate": 2.4 },
+      { "propellerId": "prop_5x5x3", "cellCount": 4, "maxThrustG": 980, "maxCurrentA": 46, "hoverCurrentAEstimate": 2.7 }
+    ]
+  },
+  {
+    "id": "motor_28065_1300kv",
+    "category": "motor",
+    "name": "2806.5 1300KV Motor",
+    "brand": "DroneLab",
+    "description": "Large, efficient motor for 7-inch props, long-range packs, and payload reserve.",
+    "priceUsd": 31,
+    "weightG": 48,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["2806.5", "6S", "long-range"],
+    "kv": 1300,
+    "statorSize": "2806.5",
+    "supportedCellMin": 4,
+    "supportedCellMax": 6,
+    "maxCurrentA": 36,
+    "shaftDiameterMm": 5,
+    "mountPattern": "19x19",
+    "thrustTests": [
+      { "propellerId": "prop_7x35x2", "cellCount": 6, "maxThrustG": 1180, "maxCurrentA": 34, "hoverCurrentAEstimate": 1.65 }
+    ]
+  }
+]

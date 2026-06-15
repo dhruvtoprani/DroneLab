@@ -1,0 +1,42 @@
+[
+  {
+    "id": "fc_f7_30x30",
+    "category": "flight_controller",
+    "name": "F7 30x30 Flight Controller",
+    "brand": "DroneLab",
+    "description": "Full-size F7 controller with generous UART and blackbox support.",
+    "priceUsd": 55,
+    "weightG": 9,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["F7", "30x30", "blackbox"],
+    "mountingPattern": "30.5x30.5",
+    "firmwareTarget": "DRONELABF7",
+    "gyro": "ICM42688P",
+    "processor": "STM32F7",
+    "osd": true,
+    "barometer": true,
+    "blackbox": true,
+    "uartCount": 6
+  },
+  {
+    "id": "fc_f4_20x20",
+    "category": "flight_controller",
+    "name": "F4 20x20 Flight Controller",
+    "brand": "DroneLab",
+    "description": "Compact controller for lightweight frames and straightforward builds.",
+    "priceUsd": 39,
+    "weightG": 6,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["F4", "20x20", "compact"],
+    "mountingPattern": "20x20",
+    "firmwareTarget": "DRONELABF4",
+    "gyro": "BMI270",
+    "processor": "STM32F4",
+    "osd": true,
+    "barometer": false,
+    "blackbox": true,
+    "uartCount": 4
+  }
+]

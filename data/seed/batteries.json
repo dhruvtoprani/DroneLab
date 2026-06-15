@@ -1,0 +1,53 @@
+[
+  {
+    "id": "battery_6s_1300mah_100c",
+    "category": "battery",
+    "name": "6S 1300mAh 100C LiPo",
+    "brand": "DroneLab",
+    "description": "Balanced high-discharge pack for a typical 5-inch freestyle quad.",
+    "priceUsd": 32,
+    "weightG": 214,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["6S", "LiPo", "freestyle"],
+    "cellCount": 6,
+    "capacityMah": 1300,
+    "cRating": 120,
+    "connector": "XT60",
+    "dimensions": { "lengthMm": 78, "widthMm": 37, "heightMm": 40 }
+  },
+  {
+    "id": "battery_4s_1500mah_100c",
+    "category": "battery",
+    "name": "4S 1500mAh 100C LiPo",
+    "brand": "DroneLab",
+    "description": "Versatile 4S pack for beginner and racing powertrains.",
+    "priceUsd": 27,
+    "weightG": 181,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["4S", "LiPo", "beginner"],
+    "cellCount": 4,
+    "capacityMah": 1500,
+    "cRating": 100,
+    "connector": "XT60",
+    "dimensions": { "lengthMm": 74, "widthMm": 36, "heightMm": 34 }
+  },
+  {
+    "id": "battery_6s_3000mah_liion",
+    "category": "battery",
+    "name": "6S 3000mAh Long-Range Pack",
+    "brand": "DroneLab",
+    "description": "High-energy, lower-discharge pack for efficient cruise rather than aggressive flight.",
+    "priceUsd": 68,
+    "weightG": 318,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["6S", "Li-ion", "long-range"],
+    "cellCount": 6,
+    "capacityMah": 3000,
+    "cRating": 20,
+    "connector": "XT60",
+    "dimensions": { "lengthMm": 108, "widthMm": 42, "heightMm": 39 }
+  }
+]

@@ -1,0 +1,53 @@
+[
+  {
+    "id": "prop_5x43x3",
+    "category": "propeller",
+    "name": "5x4.3x3 Tri-Blade Prop Set",
+    "brand": "DroneLab",
+    "description": "Balanced tri-blade propeller for freestyle and cinematic flight.",
+    "priceUsd": 4.5,
+    "weightG": 4.2,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["5-inch", "tri-blade", "balanced"],
+    "diameterIn": 5,
+    "pitch": 4.3,
+    "blades": 3,
+    "shaftHoleMm": 5,
+    "material": "polycarbonate"
+  },
+  {
+    "id": "prop_5x5x3",
+    "category": "propeller",
+    "name": "5x5x3 Racing Prop Set",
+    "brand": "DroneLab",
+    "description": "High-pitch tri-blade propeller with strong acceleration and higher current draw.",
+    "priceUsd": 5,
+    "weightG": 4.7,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["5-inch", "racing", "aggressive"],
+    "diameterIn": 5,
+    "pitch": 5,
+    "blades": 3,
+    "shaftHoleMm": 5,
+    "material": "polycarbonate"
+  },
+  {
+    "id": "prop_7x35x2",
+    "category": "propeller",
+    "name": "7x3.5x2 Long-Range Prop Set",
+    "brand": "DroneLab",
+    "description": "Efficient bi-blade propeller intended for lower-KV long-range powertrains.",
+    "priceUsd": 7,
+    "weightG": 7.5,
+    "sourceType": "manual",
+    "lastUpdated": "2026-06-15",
+    "tags": ["7-inch", "bi-blade", "efficient"],
+    "diameterIn": 7,
+    "pitch": 3.5,
+    "blades": 2,
+    "shaftHoleMm": 5,
+    "material": "glass-filled nylon"
+  }
+]
