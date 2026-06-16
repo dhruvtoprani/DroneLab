@@ -264,3 +264,50 @@ Open questions:
 - Product records still need to be imported into Postgres; the runtime catalog
   remains static JSON for now.
 - Authenticated saved-build ownership is still unimplemented.
+
+## Entry 007
+
+Date: 2026-06-16
+
+Summary:
+
+- Upgraded the builder viewport with a live build-completion HUD, status chip,
+  and clearer readiness copy.
+- Added a stronger technical 3D scene treatment: landing-pad scan rings, richer
+  lighting, part callout labels, snap markers, screw heads, standoffs, prop
+  motion discs, and better missing-part ghost geometry.
+- Added catalog checklist progress and focus-driven part highlighting.
+- Added score breakdown bars and electrical-margin diagnostics to the report
+  panel.
+- Changed passive suggestions from fake clickable buttons to non-interactive
+  advisory cards.
+
+Files changed:
+
+- `src/components/builder/BuilderApp.tsx`
+- `src/components/builder/BuildStatsPanel.tsx`
+- `src/components/builder/PartsCatalog.tsx`
+- `src/components/three/DroneScene.tsx`
+- `docs/DEV_LOG.md`
+- `docs/NEXT_STEPS.md`
+- `docs/CONTEXT.md`
+
+Key decisions:
+
+- Keep using generated geometry, but make it feel intentionally engineered with
+  labels, snap points, lighting, and subtle motion.
+- Add product-experience clarity around the existing builder instead of adding a
+  new workflow before auth/catalog persistence is complete.
+- Preserve existing dependencies and avoid introducing a 3D post-processing
+  stack at this stage.
+
+Bugs fixed:
+
+- Suggestion cards no longer look like actionable buttons when they do not
+  perform an action.
+
+Open questions:
+
+- Three.js currently emits dependency-level deprecation warnings in local dev;
+  no app runtime error was observed.
+- Mobile touch controls still need real-device validation.

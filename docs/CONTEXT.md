@@ -50,8 +50,14 @@ Implemented:
 - Three-panel builder
 - Generated frame, motors, propellers, battery, boards, camera, antenna, and payload
 - Orbit, zoom, hover highlighting, and exploded view
+- Technical 3D scene polish: landing-pad floor rings, part labels, snap markers,
+  standoffs, screw details, prop motion discs, and missing-part ghost outlines
 - WebGL unsupported-device fallback for the 3D viewport
 - Live part selection and mission profile controls
+- Builder viewport HUD with completion percentage, build status, and readiness
+  guidance
+- Catalog build checklist progress and focus-based part highlighting
+- Engineering report score breakdown and electrical margin diagnostics
 - Full seed coverage for MVP categories
 - Core performance and compatibility calculations
 - Product listing/detail APIs and build calculation API
@@ -87,6 +93,8 @@ Not implemented:
 - Use seed data and generated geometry before adding live vendor data or CAD.
 - Keep calculations deterministic and beginner-readable.
 - Keep all advanced simulation out of the MVP path.
+- Prefer product-experience improvements that clarify the current engineering
+  model before adding new feature surfaces.
 
 ## Known Risks
 
@@ -94,6 +102,9 @@ Not implemented:
 - Flight-time estimates intentionally omit battery sag, aerodynamic drag, and
   detailed throttle curves.
 - Mobile touch behavior still requires verification.
+- Three.js emits local development deprecation warnings from dependencies, but
+  the polished builder had no observed app runtime errors during browser smoke
+  testing.
 - Saved builds still fall back to encoded share links in local/preview
   environments without `DATABASE_URL`.
 - The production database contains runtime saved builds, but products are still

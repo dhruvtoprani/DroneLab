@@ -1,6 +1,12 @@
 "use client";
 
-import { ContactShadows, Grid, OrbitControls, RoundedBox } from "@react-three/drei";
+import {
+  ContactShadows,
+  Grid,
+  Html,
+  OrbitControls,
+  RoundedBox,
+} from "@react-three/drei";
 import { Canvas, type ThreeEvent, useFrame } from "@react-three/fiber";
 import { AlertTriangle, Cpu, Rotate3D } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -8,6 +14,7 @@ import type { Group } from "three";
 import { getProduct } from "@/lib/data/catalog";
 import type { BuildParts } from "@/lib/types/build";
 import type { ProductCategory } from "@/lib/types/product";
+import { cn } from "@/lib/utils";
 
 type DroneSceneProps = {
   parts: BuildParts;
@@ -27,6 +34,7 @@ const COLORS = {
   camera: "#161a1e",
   accent: "#b9ff35",
   ghost: "#6b7783",
+  scanner: "#66d9ff",
 };
 
 type WebGlStatus = "checking" | "supported" | "unsupported";
@@ -126,6 +134,148 @@ function HoverGroup({
   );
 }
 
+function PartCallout({
+  label,
+  category,
+  position,
+  highlightedCategory,
+  missing = false,
+}: {
+  label: string;
+  category: ProductCategory;
+  position: [number, number, number];
+  highlightedCategory?: ProductCategory;
+  missing?: boolean;
+}) {
+  const active = highlightedCategory === category;
+
+  return (
+    <Html
+      position={position}
+      center
+      distanceFactor={6.8}
+      zIndexRange={[20, 0]}
+      style={{ pointerEvents: "none" }}
+    >
+      <div
+        className={cn(
+          "whitespace-nowrap rounded-full border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.14em] shadow-xl backdrop-blur-md transition",
+          active
+            ? "border-lime-300/55 bg-lime-300/15 text-lime-100"
+            : missing
+              ? "border-sky-300/25 bg-sky-300/10 text-sky-100"
+              : "border-white/12 bg-black/45 text-zinc-300",
+        )}
+      >
+        {missing ? "Add " : ""}
+        {label}
+      </div>
+    </Html>
+  );
+}
+
+function SnapRing({
+  position,
+  radius = 0.36,
+  active = false,
+  color = COLORS.accent,
+}: {
+  position: [number, number, number];
+  radius?: number;
+  active?: boolean;
+  color?: string;
+}) {
+  return (
+    <group position={position} rotation={[Math.PI / 2, 0, 0]}>
+      <mesh>
+        <torusGeometry args={[radius, active ? 0.012 : 0.007, 8, 64]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={active ? 0.58 : 0.22}
+        />
+      </mesh>
+      <mesh>
+        <torusGeometry args={[radius * 0.72, 0.004, 8, 48]} />
+        <meshBasicMaterial color={color} transparent opacity={active ? 0.34 : 0.12} />
+      </mesh>
+    </group>
+  );
+}
+
+function ScrewHead({ position }: { position: [number, number, number] }) {
+  return (
+    <mesh position={position} castShadow>
+      <cylinderGeometry args={[0.055, 0.055, 0.025, 18]} />
+      <meshStandardMaterial color="#78828c" metalness={0.7} roughness={0.26} />
+    </mesh>
+  );
+}
+
+function Standoff({ position }: { position: [number, number, number] }) {
+  return (
+    <mesh position={position} castShadow>
+      <cylinderGeometry args={[0.035, 0.035, 0.42, 14]} />
+      <meshStandardMaterial color="#7b8790" metalness={0.78} roughness={0.24} />
+    </mesh>
+  );
+}
+
+function LandingPad() {
+  return (
+    <group position={[0, -0.395, 0]}>
+      {[1.55, 2.45, 3.35].map((radius, index) => (
+        <mesh key={radius} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[radius, index === 1 ? 0.008 : 0.005, 8, 96]} />
+          <meshBasicMaterial
+            color={index === 1 ? COLORS.accent : COLORS.scanner}
+            transparent
+            opacity={index === 1 ? 0.16 : 0.1}
+          />
+        </mesh>
+      ))}
+      {Array.from({ length: 8 }).map((_, index) => (
+        <mesh
+          key={index}
+          rotation={[0, (Math.PI / 4) * index, 0]}
+          position={[0, 0.002, 0]}
+        >
+          <boxGeometry args={[0.018, 0.004, 3.65]} />
+          <meshBasicMaterial color={COLORS.scanner} transparent opacity={0.08} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function GhostCylinder({
+  category,
+  position,
+  radius,
+  height,
+  onHighlight,
+}: {
+  category: ProductCategory;
+  position: [number, number, number];
+  radius: number;
+  height: number;
+  onHighlight: (category?: ProductCategory) => void;
+}) {
+  return (
+    <HoverGroup category={category} onHighlight={onHighlight}>
+      <mesh position={position}>
+        <cylinderGeometry args={[radius, radius, height, 24]} />
+        <meshBasicMaterial
+          color={COLORS.ghost}
+          transparent
+          opacity={0.16}
+          wireframe
+        />
+      </mesh>
+    </HoverGroup>
+  );
+}
+
 function Propeller({
   position,
   scale,
@@ -140,12 +290,22 @@ function Propeller({
   const ref = useRef<Group>(null);
 
   useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.45;
+    if (ref.current) ref.current.rotation.y += delta * 1.1;
   });
+  const active = highlightedCategory === "propeller";
 
   return (
     <HoverGroup category="propeller" onHighlight={onHighlight}>
       <group ref={ref} position={position}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[scale * 0.56, 56]} />
+          <meshBasicMaterial
+            color={COLORS.prop}
+            transparent
+            opacity={active ? 0.14 : 0.07}
+            depthWrite={false}
+          />
+        </mesh>
         {[0, Math.PI * 0.67, Math.PI * 1.33].map((rotation) => (
           <mesh key={rotation} rotation={[0, rotation, 0]} castShadow>
             <boxGeometry args={[scale, 0.025, 0.11]} />
@@ -206,24 +366,25 @@ function GhostPlaceholder({
   category,
   position,
   size,
+  onHighlight,
 }: {
   category: ProductCategory;
   position: [number, number, number];
   size: [number, number, number];
+  onHighlight: (category?: ProductCategory) => void;
 }) {
   return (
-    <mesh position={position}>
-      <boxGeometry args={size} />
-      <meshBasicMaterial
-        color={COLORS.ghost}
-        transparent
-        opacity={0.12}
-        wireframe
-      />
-      <HoverGroup category={category} onHighlight={() => undefined}>
-        <group />
-      </HoverGroup>
-    </mesh>
+    <HoverGroup category={category} onHighlight={onHighlight}>
+      <mesh position={position}>
+        <boxGeometry args={size} />
+        <meshBasicMaterial
+          color={COLORS.ghost}
+          transparent
+          opacity={0.14}
+          wireframe
+        />
+      </mesh>
+    </HoverGroup>
   );
 }
 
@@ -246,9 +407,26 @@ function DroneAssembly({
     [armSpread, 0.17, armSpread],
   ];
   const explosion = exploded ? 0.9 : 0;
+  const stackStandoffs: [number, number, number][] = [
+    [-0.38, 0.32, -0.38],
+    [0.38, 0.32, -0.38],
+    [-0.38, 0.32, 0.38],
+    [0.38, 0.32, 0.38],
+  ];
 
   return (
     <group rotation={[0, Math.PI / 4, 0]}>
+      {motorPositions.map((position, index) => (
+        <SnapRing
+          key={`snap-${index}`}
+          position={[position[0], 0.02, position[2]]}
+          active={
+            highlightedCategory === "motor" ||
+            highlightedCategory === "propeller"
+          }
+        />
+      ))}
+
       {parts.frame ? (
         <HoverGroup category="frame" onHighlight={onHighlight}>
           <group position={[0, exploded ? -0.2 : 0, 0]}>
@@ -263,7 +441,12 @@ function DroneAssembly({
                 />
               </mesh>
             ))}
-            <RoundedBox args={[1.45, 0.16, 1.08]} radius={0.08} castShadow>
+            <RoundedBox
+              args={[1.45, 0.13, 1.08]}
+              radius={0.08}
+              position={[0, 0.04, 0]}
+              castShadow
+            >
               <meshStandardMaterial
                 color={COLORS.carbonEdge}
                 roughness={0.55}
@@ -271,10 +454,36 @@ function DroneAssembly({
                 {...materialProps("frame", highlightedCategory)}
               />
             </RoundedBox>
+            <RoundedBox
+              args={[1.08, 0.08, 0.82]}
+              radius={0.06}
+              position={[0, -0.08, 0]}
+              castShadow
+            >
+              <meshStandardMaterial
+                color={COLORS.carbon}
+                roughness={0.64}
+                metalness={0.24}
+                {...materialProps("frame", highlightedCategory)}
+              />
+            </RoundedBox>
+            {[
+              [-0.52, 0.13, -0.38],
+              [0.52, 0.13, -0.38],
+              [-0.52, 0.13, 0.38],
+              [0.52, 0.13, 0.38],
+            ].map((position) => (
+              <ScrewHead key={position.join(":")} position={position as [number, number, number]} />
+            ))}
           </group>
         </HoverGroup>
       ) : (
-        <GhostPlaceholder category="frame" position={[0, 0, 0]} size={[4, 0.15, 0.24]} />
+        <GhostPlaceholder
+          category="frame"
+          position={[0, 0, 0]}
+          size={[4, 0.15, 0.24]}
+          onHighlight={onHighlight}
+        />
       )}
 
       {parts.motor &&
@@ -283,6 +492,17 @@ function DroneAssembly({
             key={index}
             position={[position[0], position[1] + explosion * 0.25, position[2]]}
             highlightedCategory={highlightedCategory}
+            onHighlight={onHighlight}
+          />
+        ))}
+      {!parts.motor &&
+        motorPositions.map((position, index) => (
+          <GhostCylinder
+            key={`motor-ghost-${index}`}
+            category="motor"
+            position={[position[0], position[1] + 0.05, position[2]]}
+            radius={0.28}
+            height={0.32}
             onHighlight={onHighlight}
           />
         ))}
@@ -296,6 +516,21 @@ function DroneAssembly({
             highlightedCategory={highlightedCategory}
             onHighlight={onHighlight}
           />
+        ))}
+      {!parts.propeller &&
+        motorPositions.map((position, index) => (
+          <SnapRing
+            key={`prop-ghost-${index}`}
+            position={[position[0], position[1] + 0.34, position[2]]}
+            radius={0.54}
+            active={highlightedCategory === "propeller"}
+            color={COLORS.ghost}
+          />
+        ))}
+
+      {parts.frame &&
+        stackStandoffs.map((position) => (
+          <Standoff key={position.join(":")} position={position} />
         ))}
 
       {parts.esc ? (
@@ -311,7 +546,12 @@ function DroneAssembly({
           </group>
         </HoverGroup>
       ) : (
-        <GhostPlaceholder category="esc" position={[0, 0.27, 0]} size={[0.78, 0.08, 0.78]} />
+        <GhostPlaceholder
+          category="esc"
+          position={[0, 0.27, 0]}
+          size={[0.78, 0.08, 0.78]}
+          onHighlight={onHighlight}
+        />
       )}
 
       {parts.flight_controller ? (
@@ -335,6 +575,7 @@ function DroneAssembly({
           category="flight_controller"
           position={[0, 0.43, 0]}
           size={[0.72, 0.08, 0.72]}
+          onHighlight={onHighlight}
         />
       )}
 
@@ -360,7 +601,12 @@ function DroneAssembly({
           </group>
         </HoverGroup>
       ) : (
-        <GhostPlaceholder category="battery" position={[0, 0.88, 0]} size={[0.86, 0.48, 1.7]} />
+        <GhostPlaceholder
+          category="battery"
+          position={[0, 0.88, 0]}
+          size={[0.86, 0.48, 1.7]}
+          onHighlight={onHighlight}
+        />
       )}
 
       {parts.camera ? (
@@ -380,7 +626,12 @@ function DroneAssembly({
           </group>
         </HoverGroup>
       ) : (
-        <GhostPlaceholder category="camera" position={[0, 0.3, -1.08]} size={[0.46, 0.43, 0.38]} />
+        <GhostPlaceholder
+          category="camera"
+          position={[0, 0.3, -1.08]}
+          size={[0.46, 0.43, 0.38]}
+          onHighlight={onHighlight}
+        />
       )}
 
       {parts.receiver && (
@@ -395,6 +646,14 @@ function DroneAssembly({
           </group>
         </HoverGroup>
       )}
+      {!parts.receiver && (
+        <GhostPlaceholder
+          category="receiver"
+          position={[-0.48, 0.25, 0.42]}
+          size={[0.34, 0.06, 0.22]}
+          onHighlight={onHighlight}
+        />
+      )}
 
       {parts.vtx && (
         <HoverGroup category="vtx" onHighlight={onHighlight}>
@@ -407,6 +666,14 @@ function DroneAssembly({
             </RoundedBox>
           </group>
         </HoverGroup>
+      )}
+      {!parts.vtx && (
+        <GhostPlaceholder
+          category="vtx"
+          position={[0.48, 0.25, 0.42]}
+          size={[0.38, 0.07, 0.28]}
+          onHighlight={onHighlight}
+        />
       )}
 
       {parts.antenna ? (
@@ -428,7 +695,12 @@ function DroneAssembly({
           </group>
         </HoverGroup>
       ) : (
-        <GhostPlaceholder category="antenna" position={[0, 0.42, 1.12]} size={[0.1, 0.8, 0.1]} />
+        <GhostPlaceholder
+          category="antenna"
+          position={[0, 0.42, 1.12]}
+          size={[0.1, 0.8, 0.1]}
+          onHighlight={onHighlight}
+        />
       )}
 
       {parts.payload && (
@@ -447,6 +719,63 @@ function DroneAssembly({
             </mesh>
           </group>
         </HoverGroup>
+      )}
+      <PartCallout
+        category="frame"
+        label="Frame"
+        position={[0, 0.34, -1.62]}
+        highlightedCategory={highlightedCategory}
+        missing={!parts.frame}
+      />
+      <PartCallout
+        category="motor"
+        label="Motors"
+        position={[1.95, 0.72, -1.2]}
+        highlightedCategory={highlightedCategory}
+        missing={!parts.motor}
+      />
+      <PartCallout
+        category="propeller"
+        label="Props"
+        position={[-1.9, 0.82, -1.2]}
+        highlightedCategory={highlightedCategory}
+        missing={!parts.propeller}
+      />
+      <PartCallout
+        category="battery"
+        label="Battery"
+        position={[0.85, 1.54 + explosion * 0.75, 0.18]}
+        highlightedCategory={highlightedCategory}
+        missing={!parts.battery}
+      />
+      <PartCallout
+        category="flight_controller"
+        label="FC stack"
+        position={[-1.12, 0.76 + explosion * 0.5, 0.76]}
+        highlightedCategory={highlightedCategory}
+        missing={!parts.flight_controller}
+      />
+      <PartCallout
+        category="camera"
+        label="Camera"
+        position={[-0.55, 0.82, -1.48]}
+        highlightedCategory={highlightedCategory}
+        missing={!parts.camera}
+      />
+      <PartCallout
+        category="antenna"
+        label="Antenna"
+        position={[0.25, 0.96 + explosion * 0.4, 1.52]}
+        highlightedCategory={highlightedCategory}
+        missing={!parts.antenna}
+      />
+      {parts.payload && (
+        <PartCallout
+          category="payload"
+          label="Payload"
+          position={[0, 1.94 + explosion * 1.1, -0.38]}
+          highlightedCategory={highlightedCategory}
+        />
       )}
     </group>
   );
@@ -477,15 +806,24 @@ export function DroneScene(props: DroneSceneProps) {
     >
       <color attach="background" args={["#090c0e"]} />
       <fog attach="fog" args={["#090c0e", 8, 15]} />
-      <ambientLight intensity={0.72} />
+      <ambientLight intensity={0.58} />
       <directionalLight
         position={[4, 7, 3]}
-        intensity={3.4}
+        intensity={3.8}
         color="#f2ffd7"
         castShadow
         shadow-mapSize={[1024, 1024]}
       />
-      <pointLight position={[-4, 2, -3]} intensity={7} color="#48c8ff" distance={10} />
+      <pointLight position={[-4, 2, -3]} intensity={8} color="#48c8ff" distance={10} />
+      <pointLight position={[3.5, 1.2, 4]} intensity={4.2} color="#b9ff35" distance={8} />
+      <spotLight
+        position={[0, 5.6, 0]}
+        angle={0.42}
+        penumbra={0.65}
+        intensity={14}
+        color="#dfffb7"
+        castShadow
+      />
       <DroneAssembly {...props} />
       <ContactShadows
         position={[0, -0.38, 0]}
@@ -494,6 +832,7 @@ export function DroneScene(props: DroneSceneProps) {
         blur={2.6}
         far={4}
       />
+      <LandingPad />
       <Grid
         position={[0, -0.4, 0]}
         args={[14, 14]}

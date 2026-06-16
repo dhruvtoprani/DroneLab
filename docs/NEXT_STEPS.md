@@ -26,6 +26,7 @@
 - [x] Attach Postgres-ready Prisma runtime adapter for durable saved builds.
 - [x] Apply Supabase production schema and verify durable saved-build APIs.
 - [x] Configure Vercel production `DATABASE_URL` for Supabase persistence.
+- [x] Polish builder visuals with viewport HUD, richer 3D scene labels, snap markers, and improved diagnostic panels.
 
 ## Backlog
 

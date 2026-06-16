@@ -1,8 +1,11 @@
 "use client";
 
 import {
+  Activity,
   Box,
   ChevronDown,
+  CircleAlert,
+  CircleCheck,
   Download,
   FileJson,
   Layers3,
@@ -23,6 +26,7 @@ import {
   encodeBuildForUrl,
 } from "@/lib/builds/serialization";
 import { calculateBuild } from "@/lib/compatibility/calculateBuild";
+import { categoryLabels, categoryOrder } from "@/lib/data/catalog";
 import type { BuildGoal } from "@/lib/types/build";
 import { cn } from "@/lib/utils";
 import { useBuildStore } from "@/store/useBuildStore";
@@ -35,6 +39,7 @@ const goals: { value: BuildGoal; label: string }[] = [
   { value: "long_range", label: "Long-range" },
   { value: "payload", label: "Payload" },
 ];
+const requiredCategories = categoryOrder.filter((category) => category !== "payload");
 
 function downloadFile(filename: string, content: string, type: string) {
   const blob = new Blob([content], { type });
@@ -84,6 +89,42 @@ export function BuilderApp() {
     [store.parts, store.goal, store.budgetUsd],
   );
   const { stats } = calculation;
+  const installedRequiredCount = requiredCategories.filter((category) =>
+    Boolean(store.parts[category]),
+  ).length;
+  const completionPct = Math.round(
+    (installedRequiredCount / requiredCategories.length) * 100,
+  );
+  const missingCategories = requiredCategories.filter(
+    (category) => !store.parts[category],
+  );
+  const criticalCount = calculation.warnings.filter(
+    (warning) => warning.severity === "critical",
+  ).length;
+  const warningCount = calculation.warnings.filter(
+    (warning) => warning.severity === "warning",
+  ).length;
+  const statusConfig = {
+    valid: {
+      label: "Flight-ready estimate",
+      helper: "Core checks pass",
+      className: "border-lime-300/30 bg-lime-300/10 text-lime-100",
+      Icon: CircleCheck,
+    },
+    warning: {
+      label: "Review before buying",
+      helper: `${warningCount || calculation.warnings.length} warning${(warningCount || calculation.warnings.length) === 1 ? "" : "s"}`,
+      className: "border-amber-300/30 bg-amber-300/10 text-amber-100",
+      Icon: Activity,
+    },
+    critical: {
+      label: "Blocked by compatibility",
+      helper: `${criticalCount} critical issue${criticalCount === 1 ? "" : "s"}`,
+      className: "border-red-400/35 bg-red-400/10 text-red-200",
+      Icon: CircleAlert,
+    },
+  }[calculation.status];
+  const StatusIcon = statusConfig.Icon;
 
   useEffect(() => {
     const encodedBuild = searchParams.get("build");
@@ -321,12 +362,63 @@ export function BuilderApp() {
           />
         </div>
 
-        <main className="relative min-h-[520px] overflow-hidden border-y border-white/8 lg:border-y-0">
-          <div className="pointer-events-none absolute left-5 top-5 z-10">
-            <p className="tech-label">Assembly viewport</p>
-            <p className="mt-1 text-xs text-zinc-500">
-              Drag to orbit · Scroll to zoom · Hover to inspect
-            </p>
+        <main className="relative min-h-[520px] overflow-hidden border-y border-white/8 bg-[#070a0c] lg:border-y-0">
+          <div className="pointer-events-none absolute left-4 top-4 z-10 max-w-[calc(100%-2rem)] rounded-2xl border border-white/10 bg-black/35 p-3 shadow-2xl backdrop-blur-xl sm:left-5 sm:top-5 sm:max-w-sm sm:p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="tech-label">Assembly viewport</p>
+                <p className="mt-1 text-xs text-zinc-400">
+                  Drag to orbit · Scroll to zoom · Hover to inspect
+                </p>
+              </div>
+              <span
+                className={cn(
+                  "hidden items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] sm:flex",
+                  statusConfig.className,
+                )}
+              >
+                <StatusIcon className="size-3" />
+                {calculation.status}
+              </span>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <div>
+                <p className="font-mono text-lg font-semibold text-zinc-50">
+                  {completionPct}%
+                </p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-600">
+                  systems installed
+                </p>
+              </div>
+              <div className="min-w-0 text-right">
+                <p className="text-xs font-medium text-zinc-200">
+                  {statusConfig.label}
+                </p>
+                <p className="mt-0.5 truncate text-[11px] text-zinc-500">
+                  {missingCategories.length > 0
+                    ? `Missing ${missingCategories
+                        .slice(0, 2)
+                        .map((category) => categoryLabels[category])
+                        .join(", ")}`
+                    : statusConfig.helper}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/8">
+              <div
+                className={cn(
+                  "h-full rounded-full transition-all duration-300",
+                  calculation.status === "critical"
+                    ? "bg-red-400"
+                    : calculation.status === "warning"
+                      ? "bg-amber-300"
+                      : "bg-lime-300",
+                )}
+                style={{ width: `${completionPct}%` }}
+              />
+            </div>
           </div>
 
           <div className="absolute right-4 top-4 z-10 flex gap-2">

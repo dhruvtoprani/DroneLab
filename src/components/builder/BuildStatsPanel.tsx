@@ -2,8 +2,8 @@
 
 import {
   AlertTriangle,
+  BatteryCharging,
   Check,
-  ChevronRight,
   CircleAlert,
   Gauge,
   Lightbulb,
@@ -28,6 +28,32 @@ function StatRow({
         {detail && <p className="mt-0.5 text-[10px] text-zinc-600">{detail}</p>}
       </div>
       <p className="font-mono text-sm font-medium text-zinc-100">{value}</p>
+    </div>
+  );
+}
+
+function ScoreBar({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  const tone =
+    value >= 80 ? "bg-lime-300" : value >= 60 ? "bg-amber-300" : "bg-red-400";
+
+  return (
+    <div className="py-2">
+      <div className="mb-1.5 flex items-center justify-between gap-3">
+        <p className="text-xs text-zinc-400">{label}</p>
+        <p className="font-mono text-[11px] text-zinc-300">{value.toFixed(0)}</p>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-white/8">
+        <div
+          className={cn("h-full rounded-full", tone)}
+          style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
+        />
+      </div>
     </div>
   );
 }
@@ -93,6 +119,17 @@ export function BuildStatsPanel({
             {stats.recommendedUseCase}
           </span>
         </div>
+        <div className="mt-4 rounded-xl border border-white/8 bg-white/[0.025] p-3">
+          <div className="mb-1 flex items-center justify-between">
+            <p className="tech-label">Score breakdown</p>
+            <span className="font-mono text-[10px] text-zinc-600">0-100</span>
+          </div>
+          <ScoreBar label="Compatibility" value={stats.compatibilityScore} />
+          <ScoreBar label="Performance" value={stats.performanceScore} />
+          <ScoreBar label="Efficiency" value={stats.efficiencyScore} />
+          <ScoreBar label="Budget" value={stats.costScore} />
+          <ScoreBar label="Use-case fit" value={stats.useCaseFitScore} />
+        </div>
       </div>
 
       <div className="border-b border-white/8 p-4">
@@ -120,6 +157,35 @@ export function BuildStatsPanel({
             label="Payload margin"
             value={`${stats.payloadMarginG.toFixed(0)} g`}
             detail="At a conservative 2.5:1 ratio"
+          />
+        </div>
+      </div>
+
+      <div className="border-b border-white/8 p-4">
+        <div className="mb-1 flex items-center gap-2">
+          <BatteryCharging className="size-3.5 text-sky-300" />
+          <p className="tech-label">Electrical margins</p>
+        </div>
+        <div className="divide-y divide-white/6">
+          <StatRow
+            label="Battery max current"
+            value={`${stats.batteryMaxCurrentA.toFixed(0)} A`}
+            detail="Pack discharge estimate"
+          />
+          <StatRow
+            label="Peak motor current"
+            value={`${stats.maxCurrentPerMotorA.toFixed(0)} A`}
+            detail="Per motor at full throttle"
+          />
+          <StatRow
+            label="Total max draw"
+            value={`${stats.totalMaxCurrentA.toFixed(0)} A`}
+            detail="Four motors combined"
+          />
+          <StatRow
+            label="ESC headroom"
+            value={`${stats.escSafetyMarginA.toFixed(1)} A`}
+            detail="Positive values are safer"
           />
         </div>
       </div>
@@ -176,6 +242,11 @@ export function BuildStatsPanel({
                   <p className="mt-1 text-[11px] leading-4 text-zinc-500">
                     {warning.description}
                   </p>
+                  {warning.suggestedFix && (
+                    <p className="mt-2 rounded-md border border-white/8 bg-black/20 px-2 py-1.5 text-[11px] leading-4 text-zinc-300">
+                      Fix: {warning.suggestedFix}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -189,19 +260,17 @@ export function BuildStatsPanel({
           <p className="tech-label">Suggestions</p>
         </div>
         {suggestions.map((suggestion) => (
-          <button
-            type="button"
+          <article
             key={suggestion.id}
-            className="group flex w-full items-center gap-3 rounded-lg border border-white/7 bg-white/[0.025] p-3 text-left transition hover:border-sky-300/20 hover:bg-sky-300/[0.035]"
+            className="w-full rounded-lg border border-white/7 bg-white/[0.025] p-3 text-left"
           >
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0">
               <p className="text-xs font-medium text-zinc-200">{suggestion.title}</p>
               <p className="mt-1 text-[11px] leading-4 text-zinc-500">
                 {suggestion.description}
               </p>
             </div>
-            <ChevronRight className="size-3.5 shrink-0 text-zinc-600 transition group-hover:text-sky-300" />
-          </button>
+          </article>
         ))}
       </div>
     </aside>

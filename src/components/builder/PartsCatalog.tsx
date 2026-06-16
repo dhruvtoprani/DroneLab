@@ -85,6 +85,10 @@ export function PartsCatalog({
 }: PartsCatalogProps) {
   const products = productsByCategory(activeCategory);
   const ActiveIcon = categoryIcons[activeCategory];
+  const configuredCount = categoryOrder.filter((category) =>
+    category === "payload" ? true : Boolean(parts[category]),
+  ).length;
+  const progressPct = Math.round((configuredCount / categoryOrder.length) * 100);
 
   return (
     <aside className="flex h-full min-h-0 flex-col border-r border-white/8 bg-[#0d1114]/95">
@@ -98,19 +102,39 @@ export function PartsCatalog({
             {catalog.length} parts
           </span>
         </div>
+        <div className="mb-3 rounded-lg border border-white/8 bg-black/20 p-2.5">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-500">
+              Build checklist
+            </span>
+            <span className="font-mono text-[10px] text-zinc-300">
+              {configuredCount}/{categoryOrder.length}
+            </span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-white/8">
+            <div
+              className="h-full rounded-full bg-lime-300 transition-all duration-300"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-6 gap-1.5">
           {categoryOrder.map((category) => {
             const Icon = categoryIcons[category];
-            const selected = Boolean(parts[category]);
+            const selected = category === "payload" ? true : Boolean(parts[category]);
 
             return (
               <button
                 key={category}
                 type="button"
                 title={categoryLabels[category]}
+                aria-label={`Open ${categoryLabels[category]} options`}
+                aria-pressed={activeCategory === category}
                 onClick={() => onCategoryChange(category)}
+                onFocus={() => onHighlight(category)}
+                onBlur={() => onHighlight(undefined)}
                 className={cn(
-                  "relative flex h-9 items-center justify-center rounded-md border transition",
+                  "relative flex h-9 items-center justify-center rounded-md border transition focus-visible:ring-2 focus-visible:ring-lime-300/40 focus-visible:outline-none",
                   activeCategory === category
                     ? "border-lime-300/45 bg-lime-300/12 text-lime-200"
                     : "border-white/7 bg-white/[0.025] text-zinc-500 hover:border-white/15 hover:text-zinc-200",
@@ -163,6 +187,8 @@ export function PartsCatalog({
               key={product.id}
               onMouseEnter={() => onHighlight(activeCategory)}
               onMouseLeave={() => onHighlight(undefined)}
+              onFocus={() => onHighlight(activeCategory)}
+              onBlur={() => onHighlight(undefined)}
               className={cn(
                 "rounded-lg border p-3 transition",
                 selected
@@ -199,7 +225,7 @@ export function PartsCatalog({
                   size="sm"
                   variant={selected ? "secondary" : "default"}
                   className={cn(
-                    "h-7 rounded-md px-2.5 text-[11px]",
+                    "h-8 min-w-16 rounded-md px-2.5 text-[11px]",
                     !selected &&
                       "bg-lime-300 text-[#11160d] hover:bg-lime-200",
                   )}
