@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id          String   @id
+  category    String
+  name        String
+  brand       String
+  description String?
+  priceUsd    Decimal? @map("price_usd")
+  weightG     Decimal? @map("weight_g")
+  imageUrl    String?  @map("image_url")
+  modelUrl    String?  @map("model_url")
+  sourceType  String?  @map("source_type")
+  sourceNote  String?  @map("source_note")
+  sourceUrl   String?  @map("source_url")
+  lastUpdated DateTime @map("last_updated")
+  tags        String[]
+  specs       Json
+
+  modelAssets  ModelAsset[]
+  priceSources PriceSource[]
+
+  @@index([category])
+  @@map("products")
+}
+
+model Build {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String?  @map("user_id") @db.Uuid
+  name            String
+  description     String?
+  selectedGoal    String?  @map("selected_goal")
+  budgetUsd       Decimal? @map("budget_usd")
+  parts           Json
+  calculatedStats Json?    @map("calculated_stats")
+  warnings        Json?
+  isPublic        Boolean  @default(false) @map("is_public")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([isPublic])
+  @@index([selectedGoal])
+  @@map("builds")
+}
+
+model ModelAsset {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @map("product_id")
+  assetType String   @map("asset_type")
+  url       String
+  format    String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("model_assets")
+}
+
+model PriceSource {
+  id          String    @id @default(uuid()) @db.Uuid
+  productId   String    @map("product_id")
+  vendorName  String    @map("vendor_name")
+  vendorUrl   String?   @map("vendor_url")
+  priceUsd    Decimal?  @map("price_usd")
+  inStock     Boolean?  @map("in_stock")
+  lastChecked DateTime? @map("last_checked")
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("price_sources")
+}

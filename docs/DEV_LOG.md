@@ -99,3 +99,58 @@ Open questions:
 - Vendor/live price integrations still need allowed APIs or explicit source
   agreements.
 - Real CAD/GLB ingestion still needs licensing and conversion policy.
+
+## Entry 003
+
+Date: 2026-06-16
+
+Summary:
+
+- Added saved-build API routes for create, read, update, and duplicate flows.
+- Added shared build input validation and normalization for `frameId` and
+  internal category-key payload styles.
+- Added a server-side build repository abstraction with an honest share-link
+  fallback when durable database persistence is not configured.
+- Updated the builder Save action to call `/api/builds`, keep local backup, and
+  copy the best available build link.
+- Added Prisma 7 database schema, Prisma config, and SQL migration artifacts for
+  products, builds, model assets, and price sources.
+- Added database validation scripts and `.env.example`.
+- Added tests for saved-build payload normalization and repository fallback.
+
+Files changed:
+
+- `src/app/api/builds/*`
+- `src/app/builds/[id]/page.tsx`
+- `src/components/builder/BuilderApp.tsx`
+- `src/lib/builds/savedBuildSchema.ts`
+- `src/lib/server/buildRepository.ts`
+- `src/lib/types/build.ts`
+- `prisma/schema.prisma`
+- `prisma.config.ts`
+- `prisma/migrations/000001_init/migration.sql`
+- `.env.example`
+- `package.json`
+
+Key decisions:
+
+- Do not claim durable production persistence until a real `DATABASE_URL` and
+  Prisma runtime adapter are attached.
+- Keep encoded share URLs as the reliable production fallback on Vercel.
+- Use Prisma 7's `prisma.config.ts` datasource pattern instead of the old
+  `url = env("DATABASE_URL")` schema syntax.
+- Avoid a Prisma `postinstall` hook so Vercel builds do not require database
+  secrets during dependency installation.
+
+Bugs fixed:
+
+- Centralized build part normalization so calculate, save, update, and duplicate
+  paths treat API-style and internal-style part IDs consistently.
+
+Open questions:
+
+- Choose Supabase, Neon, or Prisma Postgres as the production database provider.
+- Add the Prisma runtime adapter package for the chosen provider and replace the
+  repository fallback with durable CRUD.
+- Decide whether public build publishing requires authentication in the next
+  checkpoint or can ship as anonymous public builds first.

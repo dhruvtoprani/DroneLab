@@ -17,6 +17,9 @@ update immediately.
 - Typed product/build contracts in `src/lib/types`
 - Curated JSON catalog in `data/seed`
 - Initial read-only product and build calculation route handlers in `src/app/api`
+- Saved-build route handlers in `src/app/api/builds`
+- Server-side saved-build repository abstraction in `src/lib/server`
+- Prisma 7 schema/config/migration files in `prisma/` and `prisma.config.ts`
 
 ## Current Data Model
 
@@ -26,6 +29,10 @@ stats, warnings, suggestions, status, scores, and recommended use case.
 
 Motor performance prefers an exact motor, propeller, and cell-count thrust row.
 When no row exists, the calculation engine uses a documented rough fallback.
+
+Database-ready tables are defined for `products`, `builds`, `model_assets`, and
+`price_sources`. Prisma 7 is configured through `prisma.config.ts`; the
+datasource URL must not live in `schema.prisma`.
 
 ## Current Build Status
 
@@ -39,6 +46,9 @@ Implemented:
 - Full seed coverage for MVP categories
 - Core performance and compatibility calculations
 - Product listing/detail APIs and build calculation API
+- Saved-build create/read/update/duplicate APIs
+- Builder save action that calls the server and copies a shareable link
+- Prisma schema, config, and SQL migration for the planned Postgres layer
 - Local build save, BOM copy, and CSV export
 - JSON export and shareable encoded build URLs
 - Explore page with curated and generated build recommendations
@@ -48,9 +58,14 @@ Implemented:
 - Vitest tests and GitHub Actions CI
 - Desktop and 390px mobile browser verification
 
+Partially implemented:
+
+- Durable database persistence. API contracts and schema exist, but production
+  still needs a database provider and Prisma runtime adapter.
+
 Not implemented:
 
-- Database persistence and auth
+- Auth
 - GLB model pipeline
 - Live vendor pricing and availability
 - Manufacturer-sourced real catalog expansion
@@ -58,6 +73,9 @@ Not implemented:
 ## Important Decisions
 
 - Keep the application runnable without external services.
+- Keep encoded share URLs as the production-safe fallback until durable
+  persistence is attached.
+- Use Prisma 7's config-file datasource pattern.
 - Use seed data and generated geometry before adding live vendor data or CAD.
 - Keep calculations deterministic and beginner-readable.
 - Keep all advanced simulation out of the MVP path.
@@ -68,11 +86,15 @@ Not implemented:
 - Flight-time estimates intentionally omit battery sag, aerodynamic drag, and
   detailed throttle curves.
 - Browser WebGL support and mobile touch behavior still require verification.
+- Saved-build API responses are not durable across server restarts until a real
+  Postgres database is wired into the repository.
 
 ## Next Major Steps
 
-1. Add Supabase/Prisma persistence and authenticated saved builds.
-2. Add WebGL fallback state.
-3. Expand catalog with real sourced parts and confidence metadata.
-4. Add controlled GLB asset ingestion and optimization scripts.
-5. Add live/manual price source records and scheduled refresh hooks.
+1. Attach production Postgres and replace the repository fallback with durable
+   Prisma CRUD.
+2. Add database seed/import scripts for curated products and example builds.
+3. Add WebGL fallback state.
+4. Expand catalog with real sourced parts and confidence metadata.
+5. Add controlled GLB asset ingestion and optimization scripts.
+6. Add live/manual price source records and scheduled refresh hooks.

@@ -43,6 +43,8 @@ DroneLab turns that scattered decision process into one visual workflow:
 - Public build summary pages
 - Part intelligence/detail pages
 - Product, public builds, build-calculation, and recommendation APIs
+- Saved-build API contracts with create/read/update/duplicate endpoints
+- Prisma 7 schema, config, and SQL migration for the planned Postgres layer
 - Vitest coverage for the engineering engine and recommendations
 - GitHub Actions CI for lint, test, and build
 - Product thinking around modular hardware, simulation, and decision support
@@ -64,8 +66,10 @@ DroneLab turns that scattered decision process into one visual workflow:
 | Public build summary pages | Implemented | Inspect a build, review compatibility, and export BOMs |
 | Part detail pages | Implemented | Show normalized specs, source status, and example usage |
 | Recommendation engine | Implemented | Generate best builds from user goal and budget |
+| Saved build APIs | Implemented contract | Create, read, update, and duplicate builds with share-link fallback |
+| Prisma/Postgres schema | Implemented contract | Define products, builds, model assets, and price sources |
 | Automated tests and CI | Implemented | Guard core engineering calculations and production build health |
-| Database persistence | Planned | Save, share, and reopen public builds |
+| Durable database persistence | Next checkpoint | Attach production Postgres and wire Prisma runtime CRUD |
 | Real GLB/CAD model pipeline | Planned | Upgrade selected generated parts into realistic assets |
 
 ## Tech Stack
@@ -76,6 +80,7 @@ DroneLab turns that scattered decision process into one visual workflow:
 - **Validation:** Zod
 - **Styling:** Tailwind CSS, shadcn-style components
 - **Data:** Curated JSON seed catalog
+- **Database contract:** Prisma 7 schema and SQL migration for Postgres
 - **Engineering Engine:** Pure TypeScript calculation and compatibility modules
 
 ## User Journey
@@ -86,6 +91,8 @@ DroneLab turns that scattered decision process into one visual workflow:
 4. The stats panel updates weight, cost, flight time, thrust-to-weight ratio, current draw, and payload reserve.
 5. Compatibility warnings explain what is wrong and suggest fixes.
 6. The user exports a bill of materials or saves the build locally.
+7. The Save action calls the build API and copies a shareable URL; when a
+   production database is attached, the same API can return durable build pages.
 
 ## System Concept
 
@@ -121,10 +128,12 @@ DroneLab/
 │   │   ├── compatibility/    # Calculations, checks, scoring, and suggestions
 │   │   ├── data/             # Catalog access helpers
 │   │   ├── recommendations/  # Brute-force build ranking
+│   │   ├── server/           # Saved-build repository abstraction
 │   │   └── types/            # Product and build contracts
 │   └── store/                # Zustand builder state
 ├── data/seed/                # Curated starter product catalog
 ├── docs/                     # PRD, context, dev log, and next steps
+├── prisma/                   # Prisma schema and SQL migration contract
 └── public/models/            # Future GLB asset pipeline
 ```
 
@@ -152,13 +161,30 @@ http://localhost:3000/builder
 ```bash
 npm run lint
 npm test
+DATABASE_URL=postgresql://user:password@localhost:5432/dronelab npm run db:validate
 npm run build
 ```
+
+## Database Readiness
+
+The app is runnable without external services. Saved builds currently use a
+server API plus encoded share-link fallback unless a durable database is attached.
+
+The Postgres contract is already present:
+
+- `prisma/schema.prisma`
+- `prisma.config.ts`
+- `prisma/migrations/000001_init/migration.sql`
+- `.env.example`
+
+Next persistence step: configure `DATABASE_URL` in the deployment environment,
+choose the Prisma 7 runtime adapter for the database provider, and replace the
+repository fallback in `src/lib/server/buildRepository.ts` with durable CRUD.
 
 ## Future Work
 
 - Add WebGL unsupported-device fallback
-- Add Supabase or Prisma-backed persistence
+- Attach production Postgres and durable Prisma-backed persistence
 - Add authenticated saved build workspaces
 - Add live/manual price source records and scheduled refresh hooks
 - Expand the catalog with manufacturer-sourced, confidence-tagged real parts
@@ -175,9 +201,10 @@ DroneLab shows the ability to turn a complex engineering workflow into a polishe
 
 Functional portfolio product slice. The local builder, generated 3D assembly,
 seed catalog, compatibility checks, performance estimates, recommendations,
-shareable summaries, part detail pages, exports, tests, and CI are implemented.
-Future work focuses on persistence, real sourced parts, live price records, real
-model assets, and stronger engineering optimization.
+shareable summaries, part detail pages, saved-build API contracts, Prisma schema,
+exports, tests, and CI are implemented. Future work focuses on attaching durable
+database persistence, real sourced parts, live price records, real model assets,
+and stronger engineering optimization.
 
 ## Disclaimer
 

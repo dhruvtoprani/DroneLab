@@ -56,3 +56,17 @@ export type BuildCalculation = {
   suggestions: BuildSuggestion[];
   status: "valid" | "warning" | "critical";
 };
+
+export type DroneBuild = {
+  id: string;
+  name: string;
+  description?: string;
+  selectedGoal: BuildGoal;
+  budgetUsd?: number;
+  parts: BuildParts;
+  calculatedStats: BuildStats;
+  warnings: BuildWarning[];
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+};

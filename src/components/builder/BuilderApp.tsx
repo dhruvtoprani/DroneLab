@@ -78,6 +78,7 @@ export function BuilderApp() {
   const searchParams = useSearchParams();
   const loadedBuildParam = useRef<string | undefined>(undefined);
   const [feedback, setFeedback] = useState<string>();
+  const [saving, setSaving] = useState(false);
   const calculation = useMemo(
     () => calculateBuild(store.parts, store.goal, store.budgetUsd),
     [store.parts, store.goal, store.budgetUsd],
@@ -104,7 +105,15 @@ export function BuilderApp() {
     setFeedback(message);
     window.setTimeout(() => setFeedback(undefined), 2200);
   };
-  const saveBuild = () => {
+  const getSerializableBuild = () => ({
+    name: store.buildName,
+    goal: store.goal,
+    budgetUsd: store.budgetUsd,
+    parts: store.parts,
+  });
+  const createFallbackSharePath = () =>
+    `/builds/shared?build=${encodeBuildForUrl(getSerializableBuild())}`;
+  const saveBuildLocally = () => {
     localStorage.setItem(
       "dronelab:build",
       JSON.stringify({
@@ -116,7 +125,51 @@ export function BuilderApp() {
         updatedAt: new Date().toISOString(),
       }),
     );
-    showFeedback("Saved locally");
+  };
+  const saveBuild = async () => {
+    if (saving) return;
+
+    setSaving(true);
+    saveBuildLocally();
+
+    try {
+      const response = await fetch("/api/builds", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: store.buildName,
+          goal: store.goal,
+          budgetUsd: store.budgetUsd,
+          parts: store.parts,
+          isPublic: false,
+        }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Build save failed");
+      }
+
+      const preferredPath =
+        result.persistence?.durable === true
+          ? result.paths?.summary
+          : result.paths?.share;
+      const path = preferredPath ?? createFallbackSharePath();
+
+      await navigator.clipboard.writeText(`${window.location.origin}${path}`);
+      showFeedback(
+        result.persistence?.durable === true
+          ? "Saved. Link copied"
+          : "Share link copied",
+      );
+    } catch {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}${createFallbackSharePath()}`,
+      );
+      showFeedback("Saved locally. Share link copied");
+    } finally {
+      setSaving(false);
+    }
   };
   const copyBom = async () => {
     await navigator.clipboard.writeText(
@@ -126,10 +179,7 @@ export function BuilderApp() {
   };
   const copyShareLink = async () => {
     const encodedBuild = encodeBuildForUrl({
-      name: store.buildName,
-      goal: store.goal,
-      budgetUsd: store.budgetUsd,
-      parts: store.parts,
+      ...getSerializableBuild(),
     });
     await navigator.clipboard.writeText(
       `${window.location.origin}/builds/shared?build=${encodedBuild}`,
@@ -164,10 +214,7 @@ export function BuilderApp() {
     showFeedback("CSV downloaded");
   };
   const openSummaryHref = `/builds/shared?build=${encodeBuildForUrl({
-    name: store.buildName,
-    goal: store.goal,
-    budgetUsd: store.budgetUsd,
-    parts: store.parts,
+    ...getSerializableBuild(),
   })}`;
 
   return (
@@ -250,9 +297,10 @@ export function BuilderApp() {
             size="sm"
             className="bg-lime-300 text-[#11160d] hover:bg-lime-200"
             onClick={saveBuild}
+            disabled={saving}
           >
             <Save className="size-3.5" />
-            Save build
+            {saving ? "Saving..." : "Save build"}
           </Button>
           {feedback && (
             <span className="absolute right-4 top-14 z-50 rounded-md border border-lime-300/20 bg-[#11170f] px-3 py-2 font-mono text-[10px] uppercase tracking-wider text-lime-200 shadow-xl">

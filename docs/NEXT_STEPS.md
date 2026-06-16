@@ -2,7 +2,9 @@
 
 ## Current Priority
 
-- [ ] Add Supabase/Prisma persistence for saved builds.
+- [ ] Attach production Postgres (`DATABASE_URL`) and wire the Prisma runtime
+      adapter into `src/lib/server/buildRepository.ts`.
+- [ ] Add database seed/import script for curated products and example builds.
 - [ ] Add a WebGL unsupported-device fallback.
 - [ ] Expand the catalog with manufacturer-sourced, confidence-tagged real parts.
 - [ ] Add a controlled GLB ingestion/optimization script.
@@ -19,10 +21,13 @@
 - [x] Add part detail/intelligence pages.
 - [x] Add recommendation engine and API.
 - [x] Add GitHub Actions CI.
+- [x] Add saved-build API contracts with share-link fallback.
+- [x] Add Prisma 7 schema, config, and initial SQL migration.
+- [x] Add tests for saved-build normalization and repository fallback.
 
 ## Backlog
 
-- [ ] Add Supabase and Prisma persistence.
+- [ ] Add Supabase/Neon/Prisma Postgres durable build persistence.
 - [ ] Add authenticated user workspaces.
 - [ ] Add live/manual `price_sources` data model.
 - [ ] Add model asset records and thumbnails.
