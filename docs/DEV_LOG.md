@@ -187,3 +187,42 @@ Bugs fixed:
 Open questions:
 
 - Add automated browser coverage for forced WebGL-disabled mode.
+
+## Entry 005
+
+Date: 2026-06-16
+
+Summary:
+
+- Added the Prisma Postgres runtime adapter and generated-client build step.
+- Added lazy Prisma initialization for server-only database access.
+- Replaced the saved-build repository fallback with Prisma-first durable CRUD
+  when `DATABASE_URL` is present.
+- Kept encoded share-link fallback for local or preview environments without a
+  database URL.
+- Added a migration deploy script for production database setup.
+
+Files changed:
+
+- `package.json`
+- `package-lock.json`
+- `src/lib/server/prisma.ts`
+- `src/lib/server/buildRepository.ts`
+- `docs/*`
+
+Key decisions:
+
+- Use Prisma 7 with `@prisma/adapter-pg` for Supabase Postgres.
+- Generate Prisma Client as part of `npm run build` so Vercel has the generated
+  client before Next.js imports server modules.
+- Keep database initialization lazy to avoid build-time env crashes.
+
+Bugs fixed:
+
+- Saved builds can now be durable in environments with `DATABASE_URL`.
+
+Open questions:
+
+- Whether to make public builds anonymous or require authentication.
+- Whether to seed products into Postgres immediately or keep products as static
+  JSON until the source curation workflow is ready.

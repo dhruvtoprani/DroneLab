@@ -2,9 +2,8 @@
 
 ## Current Priority
 
-- [ ] Attach production Postgres (`DATABASE_URL`) and wire the Prisma runtime
-      adapter into `src/lib/server/buildRepository.ts`.
 - [ ] Add database seed/import script for curated products and example builds.
+- [ ] Add authenticated saved build ownership.
 - [ ] Expand the catalog with manufacturer-sourced, confidence-tagged real parts.
 - [ ] Add a controlled GLB ingestion/optimization script.
 
@@ -24,11 +23,11 @@
 - [x] Add Prisma 7 schema, config, and initial SQL migration.
 - [x] Add tests for saved-build normalization and repository fallback.
 - [x] Add WebGL unsupported-device fallback.
+- [x] Attach Postgres-ready Prisma runtime adapter for durable saved builds.
 
 ## Backlog
 
-- [ ] Add Supabase/Neon/Prisma Postgres durable build persistence.
-- [ ] Add authenticated user workspaces.
+- [ ] Add Supabase Auth and authenticated user workspaces.
 - [ ] Add live/manual `price_sources` data model.
 - [ ] Add model asset records and thumbnails.
 - [ ] Add admin/import scripts for source curation.

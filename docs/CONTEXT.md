@@ -20,6 +20,7 @@ update immediately.
 - Saved-build route handlers in `src/app/api/builds`
 - Server-side saved-build repository abstraction in `src/lib/server`
 - Prisma 7 schema/config/migration files in `prisma/` and `prisma.config.ts`
+- Lazy Prisma client initialization with the Postgres adapter
 
 ## Current Data Model
 
@@ -59,14 +60,14 @@ Implemented:
 - Vitest tests and GitHub Actions CI
 - Desktop and 390px mobile browser verification
 
-Partially implemented:
+Implemented when `DATABASE_URL` is configured:
 
-- Durable database persistence. API contracts and schema exist, but production
-  still needs a database provider and Prisma runtime adapter.
+- Durable saved-build create/read/update/duplicate through Prisma and Postgres.
 
 Not implemented:
 
 - Auth
+- Product catalog database seeding/import
 - GLB model pipeline
 - Live vendor pricing and availability
 - Manufacturer-sourced real catalog expansion
@@ -87,14 +88,13 @@ Not implemented:
 - Flight-time estimates intentionally omit battery sag, aerodynamic drag, and
   detailed throttle curves.
 - Mobile touch behavior still requires verification.
-- Saved-build API responses are not durable across server restarts until a real
-  Postgres database is wired into the repository.
+- Saved builds fall back to encoded share links in environments without
+  `DATABASE_URL`.
 
 ## Next Major Steps
 
-1. Attach production Postgres and replace the repository fallback with durable
-   Prisma CRUD.
-2. Add database seed/import scripts for curated products and example builds.
+1. Add database seed/import scripts for curated products and example builds.
+2. Add Supabase Auth and saved-build ownership.
 3. Expand catalog with real sourced parts and confidence metadata.
 4. Add controlled GLB asset ingestion and optimization scripts.
 5. Add live/manual price source records and scheduled refresh hooks.

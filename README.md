@@ -70,8 +70,9 @@ DroneLab turns that scattered decision process into one visual workflow:
 | Recommendation engine | Implemented | Generate best builds from user goal and budget |
 | Saved build APIs | Implemented contract | Create, read, update, and duplicate builds with share-link fallback |
 | Prisma/Postgres schema | Implemented contract | Define products, builds, model assets, and price sources |
+| Durable saved builds | Implemented with env | Persist builds through Prisma when `DATABASE_URL` is configured |
 | Automated tests and CI | Implemented | Guard core engineering calculations and production build health |
-| Durable database persistence | Next checkpoint | Attach production Postgres and wire Prisma runtime CRUD |
+| Authenticated workspaces | Next checkpoint | Add Supabase Auth and user-owned builds |
 | Real GLB/CAD model pipeline | Planned | Upgrade selected generated parts into realistic assets |
 
 ## Tech Stack
@@ -179,13 +180,14 @@ The Postgres contract is already present:
 - `prisma/migrations/000001_init/migration.sql`
 - `.env.example`
 
-Next persistence step: configure `DATABASE_URL` in the deployment environment,
-choose the Prisma 7 runtime adapter for the database provider, and replace the
-repository fallback in `src/lib/server/buildRepository.ts` with durable CRUD.
+When `DATABASE_URL` is configured, `src/lib/server/buildRepository.ts` uses
+Prisma 7 with the Postgres driver adapter for durable saved-build CRUD. Without
+that env var, saved builds fall back to encoded share links so the app remains
+runnable in local and preview environments.
 
 ## Future Work
 
-- Attach production Postgres and durable Prisma-backed persistence
+- Add database seed/import scripts for curated products and example builds
 - Add authenticated saved build workspaces
 - Add live/manual price source records and scheduled refresh hooks
 - Expand the catalog with manufacturer-sourced, confidence-tagged real parts
@@ -204,8 +206,8 @@ Functional portfolio product slice. The local builder, generated 3D assembly,
 seed catalog, compatibility checks, performance estimates, recommendations,
 shareable summaries, part detail pages, WebGL fallback, saved-build API
 contracts, Prisma schema, exports, tests, and CI are implemented. Future work
-focuses on attaching durable database persistence, real sourced parts, live
-price records, real model assets, and stronger engineering optimization.
+focuses on database seeding, auth, real sourced parts, live price records, real
+model assets, and stronger engineering optimization.
 
 ## Disclaimer
 
