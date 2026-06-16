@@ -154,3 +154,36 @@ Open questions:
   repository fallback with durable CRUD.
 - Decide whether public build publishing requires authentication in the next
   checkpoint or can ship as anonymous public builds first.
+
+## Entry 004
+
+Date: 2026-06-16
+
+Summary:
+
+- Added WebGL capability detection around the React Three Fiber scene.
+- Added a styled fallback panel when hardware-accelerated 3D is unavailable.
+- Preserved the rest of the builder workflow when WebGL is unsupported: part
+  selection, compatibility checks, stats, and exports still work.
+
+Files changed:
+
+- `src/components/three/DroneScene.tsx`
+- `docs/DEV_LOG.md`
+- `docs/NEXT_STEPS.md`
+- `docs/CONTEXT.md`
+
+Key decisions:
+
+- Put WebGL detection at the scene boundary, not the page boundary, so only the
+  3D viewport is replaced.
+- Keep fallback copy instructional and non-blocking.
+
+Bugs fixed:
+
+- Unsupported WebGL devices now receive an explicit fallback instead of a blank
+  or crashing 3D canvas.
+
+Open questions:
+
+- Add automated browser coverage for forced WebGL-disabled mode.

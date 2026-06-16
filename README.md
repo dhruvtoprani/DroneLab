@@ -32,6 +32,7 @@ DroneLab turns that scattered decision process into one visual workflow:
 ## What DroneLab Demonstrates
 
 - Interactive 3D quadcopter assembly using generated geometry
+- WebGL fallback that preserves the engineering workflow if 3D is unavailable
 - Curated FPV part catalog across all core build categories
 - Compatibility checks for fit, voltage, current, mounting, payload, and budget
 - Transparent performance estimates for weight, cost, thrust-to-weight, and flight time
@@ -56,6 +57,7 @@ DroneLab turns that scattered decision process into one visual workflow:
 | Landing page | Implemented MVP | Explain the product and route users into the builder |
 | Three-panel builder | Implemented MVP | Combine catalog, 3D scene, and engineering stats |
 | Generated 3D drone assembly | Implemented MVP | Visualize selected parts without relying on external CAD |
+| WebGL fallback | Implemented | Keep catalog, stats, and exports usable on unsupported 3D devices |
 | Seed product catalog | Implemented MVP | Cover frame, motors, props, battery, ESC, FC, camera, receiver, VTX, antenna, and payload |
 | Compatibility engine | Implemented MVP | Catch unsafe or invalid part combinations |
 | Performance estimates | Implemented MVP | Estimate cost, weight, flight time, current, thrust, and payload reserve |
@@ -183,7 +185,6 @@ repository fallback in `src/lib/server/buildRepository.ts` with durable CRUD.
 
 ## Future Work
 
-- Add WebGL unsupported-device fallback
 - Attach production Postgres and durable Prisma-backed persistence
 - Add authenticated saved build workspaces
 - Add live/manual price source records and scheduled refresh hooks
@@ -201,10 +202,10 @@ DroneLab shows the ability to turn a complex engineering workflow into a polishe
 
 Functional portfolio product slice. The local builder, generated 3D assembly,
 seed catalog, compatibility checks, performance estimates, recommendations,
-shareable summaries, part detail pages, saved-build API contracts, Prisma schema,
-exports, tests, and CI are implemented. Future work focuses on attaching durable
-database persistence, real sourced parts, live price records, real model assets,
-and stronger engineering optimization.
+shareable summaries, part detail pages, WebGL fallback, saved-build API
+contracts, Prisma schema, exports, tests, and CI are implemented. Future work
+focuses on attaching durable database persistence, real sourced parts, live
+price records, real model assets, and stronger engineering optimization.
 
 ## Disclaimer
 

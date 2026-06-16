@@ -2,7 +2,8 @@
 
 import { ContactShadows, Grid, OrbitControls, RoundedBox } from "@react-three/drei";
 import { Canvas, type ThreeEvent, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { AlertTriangle, Cpu, Rotate3D } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { Group } from "three";
 import { getProduct } from "@/lib/data/catalog";
 import type { BuildParts } from "@/lib/types/build";
@@ -27,6 +28,64 @@ const COLORS = {
   accent: "#b9ff35",
   ghost: "#6b7783",
 };
+
+type WebGlStatus = "checking" | "supported" | "unsupported";
+
+function isWebGlAvailable() {
+  if (typeof window === "undefined") return false;
+
+  try {
+    const canvas = document.createElement("canvas");
+    const context =
+      canvas.getContext("webgl2") ??
+      canvas.getContext("webgl") ??
+      canvas.getContext("experimental-webgl");
+
+    return Boolean(window.WebGLRenderingContext && context);
+  } catch {
+    return false;
+  }
+}
+
+function SceneFallback({ status }: { status: WebGlStatus }) {
+  const checking = status === "checking";
+
+  return (
+    <div className="flex h-full min-h-[520px] items-center justify-center bg-[radial-gradient(circle_at_top,#182027_0%,#090c0e_58%)] p-6">
+      <div className="max-w-md rounded-2xl border border-white/10 bg-black/35 p-6 text-center shadow-2xl backdrop-blur-md">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-xl border border-lime-300/20 bg-lime-300/10 text-lime-200">
+          {checking ? <Rotate3D className="size-5 animate-spin" /> : <AlertTriangle className="size-5" />}
+        </div>
+        <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-lime-200">
+          3D viewport
+        </p>
+        <h2 className="mt-2 text-xl font-semibold text-zinc-50">
+          {checking ? "Checking graphics support" : "WebGL is not available"}
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-zinc-400">
+          {checking
+            ? "DroneLab is preparing the generated assembly view."
+            : "Your browser or device blocked hardware-accelerated 3D. You can still select parts, review compatibility, calculate performance, and export the bill of materials."}
+        </p>
+        {!checking && (
+          <div className="mt-5 rounded-xl border border-white/8 bg-white/[0.025] p-4 text-left">
+            <div className="flex gap-3">
+              <Cpu className="mt-0.5 size-4 shrink-0 text-zinc-500" />
+              <div>
+                <p className="text-sm font-medium text-zinc-200">Try this first</p>
+                <p className="mt-1 text-xs leading-5 text-zinc-500">
+                  Enable hardware acceleration, update the browser, or reopen
+                  DroneLab in Chrome, Edge, Safari, or Firefox on a device with
+                  WebGL support.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function materialProps(
   category: ProductCategory,
@@ -394,6 +453,20 @@ function DroneAssembly({
 }
 
 export function DroneScene(props: DroneSceneProps) {
+  const [webGlStatus, setWebGlStatus] = useState<WebGlStatus>("checking");
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setWebGlStatus(isWebGlAvailable() ? "supported" : "unsupported");
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  if (webGlStatus !== "supported") {
+    return <SceneFallback status={webGlStatus} />;
+  }
+
   return (
     <Canvas
       camera={{ position: [5.8, 4.6, 6.6], fov: 34 }}

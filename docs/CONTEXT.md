@@ -42,6 +42,7 @@ Implemented:
 - Three-panel builder
 - Generated frame, motors, propellers, battery, boards, camera, antenna, and payload
 - Orbit, zoom, hover highlighting, and exploded view
+- WebGL unsupported-device fallback for the 3D viewport
 - Live part selection and mission profile controls
 - Full seed coverage for MVP categories
 - Core performance and compatibility calculations
@@ -85,7 +86,7 @@ Not implemented:
 - Seed thrust and current values are illustrative and need real source validation.
 - Flight-time estimates intentionally omit battery sag, aerodynamic drag, and
   detailed throttle curves.
-- Browser WebGL support and mobile touch behavior still require verification.
+- Mobile touch behavior still requires verification.
 - Saved-build API responses are not durable across server restarts until a real
   Postgres database is wired into the repository.
 
@@ -94,7 +95,7 @@ Not implemented:
 1. Attach production Postgres and replace the repository fallback with durable
    Prisma CRUD.
 2. Add database seed/import scripts for curated products and example builds.
-3. Add WebGL fallback state.
-4. Expand catalog with real sourced parts and confidence metadata.
-5. Add controlled GLB asset ingestion and optimization scripts.
-6. Add live/manual price source records and scheduled refresh hooks.
+3. Expand catalog with real sourced parts and confidence metadata.
+4. Add controlled GLB asset ingestion and optimization scripts.
+5. Add live/manual price source records and scheduled refresh hooks.
+6. Add browser coverage for WebGL-disabled and mobile touch states.
