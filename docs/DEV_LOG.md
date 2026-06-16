@@ -226,3 +226,41 @@ Open questions:
 - Whether to make public builds anonymous or require authentication.
 - Whether to seed products into Postgres immediately or keep products as static
   JSON until the source curation workflow is ready.
+
+## Entry 006
+
+Date: 2026-06-16
+
+Summary:
+
+- Applied the initial Postgres schema to the Supabase production database through
+  the transaction pooler.
+- Added Supabase-aware TLS handling to the Prisma `pg` adapter path.
+- Verified local saved-build create and read APIs against Supabase with
+  `persistence.durable: true`.
+- Added `DATABASE_URL` as a sensitive Vercel production environment variable.
+
+Files changed:
+
+- `src/lib/server/prisma.ts`
+- `docs/DEV_LOG.md`
+- `docs/NEXT_STEPS.md`
+- `docs/CONTEXT.md`
+
+Key decisions:
+
+- Use Supabase's transaction pooler URL for Vercel/serverless runtime access.
+- Strip `sslmode` for Supabase URLs inside the Prisma adapter config and pass an
+  explicit TLS config, avoiding `pg` certificate-chain failures.
+- Keep local/non-Supabase database behavior unchanged.
+
+Bugs fixed:
+
+- Supabase pooler connections no longer fail in the Prisma runtime adapter due
+  to certificate validation behavior in the underlying `pg` connection parser.
+
+Open questions:
+
+- Product records still need to be imported into Postgres; the runtime catalog
+  remains static JSON for now.
+- Authenticated saved-build ownership is still unimplemented.

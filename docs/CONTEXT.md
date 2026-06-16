@@ -21,6 +21,8 @@ update immediately.
 - Server-side saved-build repository abstraction in `src/lib/server`
 - Prisma 7 schema/config/migration files in `prisma/` and `prisma.config.ts`
 - Lazy Prisma client initialization with the Postgres adapter
+- Supabase Postgres is the production database, connected through the Supabase
+  transaction pooler via Vercel's sensitive `DATABASE_URL` environment variable
 
 ## Current Data Model
 
@@ -34,6 +36,11 @@ When no row exists, the calculation engine uses a documented rough fallback.
 Database-ready tables are defined for `products`, `builds`, `model_assets`, and
 `price_sources`. Prisma 7 is configured through `prisma.config.ts`; the
 datasource URL must not live in `schema.prisma`.
+
+The initial schema has been applied to the Supabase production project. Runtime
+saved builds use Prisma with `@prisma/adapter-pg`; Supabase pooler URLs receive
+an explicit TLS config in `src/lib/server/prisma.ts` so Vercel functions can
+connect reliably.
 
 ## Current Build Status
 
@@ -59,10 +66,9 @@ Implemented:
 - Recommendation and public builds APIs
 - Vitest tests and GitHub Actions CI
 - Desktop and 390px mobile browser verification
-
-Implemented when `DATABASE_URL` is configured:
-
-- Durable saved-build create/read/update/duplicate through Prisma and Postgres.
+- Durable saved-build create/read/update/duplicate through Prisma and Supabase
+  Postgres when `DATABASE_URL` is configured
+- Vercel production has `DATABASE_URL` configured for Supabase persistence
 
 Not implemented:
 
@@ -88,8 +94,10 @@ Not implemented:
 - Flight-time estimates intentionally omit battery sag, aerodynamic drag, and
   detailed throttle curves.
 - Mobile touch behavior still requires verification.
-- Saved builds fall back to encoded share links in environments without
-  `DATABASE_URL`.
+- Saved builds still fall back to encoded share links in local/preview
+  environments without `DATABASE_URL`.
+- The production database contains runtime saved builds, but products are still
+  loaded from static JSON until the catalog import path is added.
 
 ## Next Major Steps
 

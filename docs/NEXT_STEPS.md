@@ -24,6 +24,8 @@
 - [x] Add tests for saved-build normalization and repository fallback.
 - [x] Add WebGL unsupported-device fallback.
 - [x] Attach Postgres-ready Prisma runtime adapter for durable saved builds.
+- [x] Apply Supabase production schema and verify durable saved-build APIs.
+- [x] Configure Vercel production `DATABASE_URL` for Supabase persistence.
 
 ## Backlog
 
