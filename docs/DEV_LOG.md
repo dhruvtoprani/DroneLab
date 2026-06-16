@@ -52,3 +52,50 @@ Open questions:
 - Supabase project and authentication strategy are not configured yet.
 - Saved builds currently require the database phase.
 - Real product sourcing and model licensing require a separate curation pass.
+
+## Entry 002
+
+Date: 2026-06-16
+
+Summary:
+
+- Added a brute-force recommendation engine that ranks valid catalog combinations.
+- Added `/explore` with generated recommendations and curated example builds.
+- Added public build summary pages at `/builds/[id]`.
+- Added part intelligence pages at `/parts/[id]`.
+- Added shareable encoded build URLs that can reopen in the builder.
+- Added JSON export in the builder alongside BOM text and CSV.
+- Added public builds and recommendations APIs.
+- Added Vitest coverage and GitHub Actions CI.
+- Extended product types for source URLs, confidence levels, live price readiness,
+  and model provenance metadata.
+
+Files changed:
+
+- `src/app/explore/page.tsx`
+- `src/app/builds/[id]/page.tsx`
+- `src/app/parts/[id]/page.tsx`
+- `src/app/api/builds/public/route.ts`
+- `src/app/api/builds/recommend/route.ts`
+- `src/components/builds/BuildSummary.tsx`
+- `src/lib/builds/*`
+- `src/lib/recommendations/*`
+- `src/lib/compatibility/*.test.ts`
+- `.github/workflows/ci.yml`
+
+Key decisions:
+
+- Use URL-encoded builds as an immediate share path before database persistence.
+- Keep recommendation scoring deterministic and source-data-driven.
+- Use generated model fallback as the guaranteed rendering path while adding
+  metadata fields for curated GLB and manufacturer CAD later.
+
+Bugs fixed:
+
+- Added Vitest alias configuration so tests resolve the same `@/*` imports as Next.js.
+
+Open questions:
+
+- Vendor/live price integrations still need allowed APIs or explicit source
+  agreements.
+- Real CAD/GLB ingestion still needs licensing and conversion policy.

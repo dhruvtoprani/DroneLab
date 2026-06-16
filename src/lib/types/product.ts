@@ -23,8 +23,21 @@ export type ProductBase = {
   modelUrl?: string;
   sourceType: "manual" | "manufacturer" | "datasheet" | "user_submitted";
   sourceNote?: string;
+  sourceUrl?: string;
+  manufacturerUrl?: string;
+  datasheetUrl?: string;
+  vendorUrls?: string[];
+  specConfidence?: "estimated" | "listed" | "verified";
+  priceConfidence?: "manual" | "vendor" | "live";
   lastUpdated: string;
   tags: string[];
+  modelMode?:
+    | "generated"
+    | "curated_glb"
+    | "manufacturer_cad"
+    | "user_submitted";
+  modelLicense?: string;
+  modelVerified?: boolean;
 };
 
 export type FrameSpec = ProductBase & {

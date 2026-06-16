@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { BuilderApp } from "@/components/builder/BuilderApp";
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function BuilderPage() {
-  return <BuilderApp />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#090c0e]" />}>
+      <BuilderApp />
+    </Suspense>
+  );
 }

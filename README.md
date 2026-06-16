@@ -36,7 +36,15 @@ DroneLab turns that scattered decision process into one visual workflow:
 - Compatibility checks for fit, voltage, current, mounting, payload, and budget
 - Transparent performance estimates for weight, cost, thrust-to-weight, and flight time
 - Beginner-readable warnings and suggested fixes
-- Local build saving, copyable bill of materials, and CSV export
+- Mission profile and budget controls
+- Local build saving
+- Copyable BOM, CSV export, JSON export, and shareable build URLs
+- Explore gallery with curated and generated recommendations
+- Public build summary pages
+- Part intelligence/detail pages
+- Product, public builds, build-calculation, and recommendation APIs
+- Vitest coverage for the engineering engine and recommendations
+- GitHub Actions CI for lint, test, and build
 - Product thinking around modular hardware, simulation, and decision support
 
 ## Current Feature Set
@@ -50,9 +58,14 @@ DroneLab turns that scattered decision process into one visual workflow:
 | Compatibility engine | Implemented MVP | Catch unsafe or invalid part combinations |
 | Performance estimates | Implemented MVP | Estimate cost, weight, flight time, current, thrust, and payload reserve |
 | BOM copy and CSV export | Implemented MVP | Let users carry the build into a shopping/planning workflow |
+| JSON export and share links | Implemented | Move builds between summary pages and the builder without a backend |
 | Local build save | Implemented MVP | Preserve one working build without backend dependency |
+| Explore page | Implemented | Browse curated builds and generated recommendations |
+| Public build summary pages | Implemented | Inspect a build, review compatibility, and export BOMs |
+| Part detail pages | Implemented | Show normalized specs, source status, and example usage |
+| Recommendation engine | Implemented | Generate best builds from user goal and budget |
+| Automated tests and CI | Implemented | Guard core engineering calculations and production build health |
 | Database persistence | Planned | Save, share, and reopen public builds |
-| Recommendation engine | Planned | Generate best builds from user goal and budget |
 | Real GLB/CAD model pipeline | Planned | Upgrade selected generated parts into realistic assets |
 
 ## Tech Stack
@@ -96,12 +109,18 @@ The MVP intentionally uses generated geometry and curated seed data before addin
 DroneLab/
 ├── src/
 │   ├── app/                  # Pages and API routes
+│   │   ├── explore/          # Curated and generated build gallery
+│   │   ├── builds/           # Public build summaries
+│   │   └── parts/            # Part intelligence pages
 │   ├── components/builder/   # Catalog, stats, and builder workspace
+│   ├── components/builds/    # Build summary UI
 │   ├── components/three/     # Generated 3D drone assembly
 │   ├── components/ui/        # Reusable UI primitives
 │   ├── lib/
+│   │   ├── builds/           # Build serialization and BOM export helpers
 │   │   ├── compatibility/    # Calculations, checks, scoring, and suggestions
 │   │   ├── data/             # Catalog access helpers
+│   │   ├── recommendations/  # Brute-force build ranking
 │   │   └── types/            # Product and build contracts
 │   └── store/                # Zustand builder state
 ├── data/seed/                # Curated starter product catalog
@@ -132,22 +151,21 @@ http://localhost:3000/builder
 
 ```bash
 npm run lint
+npm test
 npm run build
 ```
 
 ## Future Work
 
-- Add unit tests for calculations and compatibility rules
-- Add full build JSON export
 - Add WebGL unsupported-device fallback
 - Add Supabase or Prisma-backed persistence
-- Add saved build detail pages and public sharing
-- Build curated explore and product detail pages
-- Add recommendation search across valid seed combinations
+- Add authenticated saved build workspaces
+- Add live/manual price source records and scheduled refresh hooks
+- Expand the catalog with manufacturer-sourced, confidence-tagged real parts
+- Add controlled GLB/CAD ingestion and optimization scripts
 - Add center-of-mass and battery-position controls
 - Add build comparison and Pareto tradeoff views
 - Calibrate estimates with real thrust tests and flight logs
-- Replace selected generated parts with optimized GLB assets where useful
 
 ## Portfolio Positioning
 
@@ -155,7 +173,11 @@ DroneLab shows the ability to turn a complex engineering workflow into a polishe
 
 ## Status
 
-Early MVP / portfolio project. The core local builder, generated 3D assembly, seed catalog, compatibility checks, and performance estimates are implemented. Future work focuses on tests, persistence, public build sharing, recommendation search, real product data, and stronger engineering optimization.
+Functional portfolio product slice. The local builder, generated 3D assembly,
+seed catalog, compatibility checks, performance estimates, recommendations,
+shareable summaries, part detail pages, exports, tests, and CI are implemented.
+Future work focuses on persistence, real sourced parts, live price records, real
+model assets, and stronger engineering optimization.
 
 ## Disclaimer
 

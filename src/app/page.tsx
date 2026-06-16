@@ -142,9 +142,9 @@ export default function Home() {
           <a href="#features" className="transition hover:text-zinc-100">
             Features
           </a>
-          <a href="#builds" className="transition hover:text-zinc-100">
+          <Link href="/explore" className="transition hover:text-zinc-100">
             Example builds
-          </a>
+          </Link>
           <span className="text-zinc-700">Engineering notes</span>
         </nav>
         <Link
@@ -154,8 +154,8 @@ export default function Home() {
             "bg-lime-300 text-[#11160d] hover:bg-lime-200",
           )}
         >
-            Open builder
-            <ArrowRight className="size-3.5" />
+          Open builder
+          <ArrowRight className="size-3.5" />
         </Link>
       </header>
 
@@ -186,15 +186,15 @@ export default function Home() {
                 Start building
                 <ArrowRight className="size-4" />
               </Link>
-              <a
-                href="#builds"
+              <Link
+                href="/explore"
                 className={cn(
                   buttonVariants({ size: "lg", variant: "outline" }),
                   "h-12 border-white/10 bg-white/[0.025] px-6 text-zinc-200 hover:bg-white/[0.06]",
                 )}
               >
                 Explore example builds
-              </a>
+              </Link>
             </div>
             <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-xs text-zinc-500">
               {[
@@ -269,10 +269,10 @@ export default function Home() {
               </h2>
             </div>
             <Link
-              href="/builder"
+              href="/explore"
               className="flex items-center gap-2 text-xs text-zinc-400 transition hover:text-zinc-100"
             >
-              Compare in builder <ArrowRight className="size-3.5" />
+              View full gallery <ArrowRight className="size-3.5" />
             </Link>
           </div>
 

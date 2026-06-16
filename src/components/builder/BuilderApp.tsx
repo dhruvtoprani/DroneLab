@@ -4,19 +4,25 @@ import {
   Box,
   ChevronDown,
   Download,
+  FileJson,
   Layers3,
   RotateCcw,
   Save,
   Share2,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BuildStatsPanel } from "@/components/builder/BuildStatsPanel";
 import { PartsCatalog } from "@/components/builder/PartsCatalog";
 import { DroneScene } from "@/components/three/DroneScene";
 import { Button } from "@/components/ui/button";
+import { createBomCsv, createBomText } from "@/lib/builds/bom";
+import {
+  decodeBuildFromUrl,
+  encodeBuildForUrl,
+} from "@/lib/builds/serialization";
 import { calculateBuild } from "@/lib/compatibility/calculateBuild";
-import { catalog, categoryLabels, categoryOrder } from "@/lib/data/catalog";
 import type { BuildGoal } from "@/lib/types/build";
 import { cn } from "@/lib/utils";
 import { useBuildStore } from "@/store/useBuildStore";
@@ -30,72 +36,14 @@ const goals: { value: BuildGoal; label: string }[] = [
   { value: "payload", label: "Payload" },
 ];
 
-function getBuildProducts(parts: ReturnType<typeof useBuildStore.getState>["parts"]) {
-  return categoryOrder.flatMap((category) => {
-    const product = catalog.find(
-      (item) => item.category === category && item.id === parts[category],
-    );
-
-    if (!product) return [];
-
-    const quantity = category === "motor" ? 4 : category === "propeller" ? 4 : 1;
-    const chargedQuantity = category === "motor" ? 4 : 1;
-
-    return [{ product, quantity, chargedQuantity }];
-  });
-}
-
-function downloadCsv(
-  parts: ReturnType<typeof useBuildStore.getState>["parts"],
-) {
-  const header =
-    "category,name,brand,quantity,unit_price,total_price,weight_g,total_weight_g";
-  const rows = getBuildProducts(parts).map(
-    ({ product, quantity, chargedQuantity }) =>
-      [
-        categoryLabels[product.category],
-        `"${product.name}"`,
-        `"${product.brand}"`,
-        quantity,
-        product.priceUsd.toFixed(2),
-        (product.priceUsd * chargedQuantity).toFixed(2),
-        product.weightG,
-        (product.weightG * quantity).toFixed(1),
-      ].join(","),
-  );
-  const blob = new Blob([[header, ...rows].join("\n")], {
-    type: "text/csv;charset=utf-8",
-  });
+function downloadFile(filename: string, content: string, type: string) {
+  const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "dronelab-balanced-freestyle-bom.csv";
+  anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
-}
-
-function createBomText(
-  parts: ReturnType<typeof useBuildStore.getState>["parts"],
-  totalCostUsd: number,
-  totalWeightG: number,
-  flightTimeMin: number,
-  thrustToWeightRatio: number,
-) {
-  const lines = getBuildProducts(parts).map(
-    ({ product, quantity, chargedQuantity }) =>
-      `${categoryLabels[product.category]}: ${quantity > 1 ? `${quantity}x ` : ""}${product.name} - $${(product.priceUsd * chargedQuantity).toFixed(0)}`,
-  );
-
-  return [
-    "DroneLab Build: Balanced 5-Inch Freestyle",
-    "",
-    ...lines,
-    "",
-    `Total Cost: $${totalCostUsd.toFixed(0)}`,
-    `Total Weight: ${totalWeightG.toFixed(0)}g`,
-    `Estimated Flight Time: ${flightTimeMin.toFixed(1)} min`,
-    `Thrust-to-Weight: ${thrustToWeightRatio.toFixed(1)}:1`,
-  ].join("\n");
 }
 
 function Metric({
@@ -126,12 +74,32 @@ function Metric({
 
 export function BuilderApp() {
   const store = useBuildStore();
+  const setBuild = store.setBuild;
+  const searchParams = useSearchParams();
+  const loadedBuildParam = useRef<string | undefined>(undefined);
   const [feedback, setFeedback] = useState<string>();
   const calculation = useMemo(
     () => calculateBuild(store.parts, store.goal, store.budgetUsd),
     [store.parts, store.goal, store.budgetUsd],
   );
   const { stats } = calculation;
+
+  useEffect(() => {
+    const encodedBuild = searchParams.get("build");
+    if (!encodedBuild || loadedBuildParam.current === encodedBuild) return;
+
+    const decoded = decodeBuildFromUrl(encodedBuild);
+    if (!decoded) return;
+
+    loadedBuildParam.current = encodedBuild;
+    setBuild({
+      buildName: decoded.name,
+      goal: decoded.goal,
+      budgetUsd: decoded.budgetUsd,
+      parts: decoded.parts,
+    });
+  }, [searchParams, setBuild]);
+
   const showFeedback = (message: string) => {
     setFeedback(message);
     window.setTimeout(() => setFeedback(undefined), 2200);
@@ -140,7 +108,7 @@ export function BuilderApp() {
     localStorage.setItem(
       "dronelab:build",
       JSON.stringify({
-        name: "Balanced 5-Inch Freestyle",
+        name: store.buildName,
         goal: store.goal,
         budgetUsd: store.budgetUsd,
         parts: store.parts,
@@ -152,16 +120,55 @@ export function BuilderApp() {
   };
   const copyBom = async () => {
     await navigator.clipboard.writeText(
-      createBomText(
-        store.parts,
-        stats.totalCostUsd,
-        stats.totalWeightG,
-        stats.estimatedFlightTimeMin,
-        stats.thrustToWeightRatio,
-      ),
+      createBomText(store.buildName, store.parts, stats),
     );
     showFeedback("BOM copied");
   };
+  const copyShareLink = async () => {
+    const encodedBuild = encodeBuildForUrl({
+      name: store.buildName,
+      goal: store.goal,
+      budgetUsd: store.budgetUsd,
+      parts: store.parts,
+    });
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/builds/shared?build=${encodedBuild}`,
+    );
+    showFeedback("Share link copied");
+  };
+  const downloadJson = () => {
+    downloadFile(
+      "dronelab-build.json",
+      JSON.stringify(
+        {
+          name: store.buildName,
+          goal: store.goal,
+          budgetUsd: store.budgetUsd,
+          parts: store.parts,
+          calculation,
+          exportedAt: new Date().toISOString(),
+        },
+        null,
+        2,
+      ),
+      "application/json;charset=utf-8",
+    );
+    showFeedback("JSON downloaded");
+  };
+  const downloadCsv = () => {
+    downloadFile(
+      "dronelab-bom.csv",
+      createBomCsv(store.parts),
+      "text/csv;charset=utf-8",
+    );
+    showFeedback("CSV downloaded");
+  };
+  const openSummaryHref = `/builds/shared?build=${encodeBuildForUrl({
+    name: store.buildName,
+    goal: store.goal,
+    budgetUsd: store.budgetUsd,
+    parts: store.parts,
+  })}`;
 
   return (
     <div className="flex min-h-screen flex-col bg-[#090c0e] text-zinc-100 lg:h-screen lg:overflow-hidden">
@@ -183,7 +190,7 @@ export function BuilderApp() {
             type="button"
             className="hidden items-center gap-2 text-xs text-zinc-400 hover:text-zinc-100 sm:flex"
           >
-            Balanced 5-Inch Freestyle
+            {store.buildName}
             <ChevronDown className="size-3.5" />
           </button>
         </div>
@@ -203,10 +210,7 @@ export function BuilderApp() {
             size="icon-sm"
             className="text-zinc-400"
             aria-label="Download bill of materials as CSV"
-            onClick={() => {
-              downloadCsv(store.parts);
-              showFeedback("CSV downloaded");
-            }}
+            onClick={downloadCsv}
           >
             <Download className="size-3.5" />
           </Button>
@@ -214,11 +218,34 @@ export function BuilderApp() {
             variant="ghost"
             size="icon-sm"
             className="text-zinc-400"
-            aria-label="Copy bill of materials"
-            onClick={copyBom}
+            aria-label="Download build JSON"
+            onClick={downloadJson}
+          >
+            <FileJson className="size-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-zinc-400"
+            aria-label="Copy share link"
+            onClick={copyShareLink}
           >
             <Share2 className="size-3.5" />
           </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hidden text-zinc-400 hover:text-zinc-100 xl:flex"
+            onClick={copyBom}
+          >
+            Copy BOM
+          </Button>
+          <Link
+            href={openSummaryHref}
+            className="hidden rounded-md px-2.5 py-1.5 text-[0.8rem] text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 lg:inline-flex"
+          >
+            Summary
+          </Link>
           <Button
             size="sm"
             className="bg-lime-300 text-[#11160d] hover:bg-lime-200"

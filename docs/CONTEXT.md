@@ -40,15 +40,20 @@ Implemented:
 - Core performance and compatibility calculations
 - Product listing/detail APIs and build calculation API
 - Local build save, BOM copy, and CSV export
+- JSON export and shareable encoded build URLs
+- Explore page with curated and generated build recommendations
+- Public build summary pages
+- Part intelligence pages
+- Recommendation and public builds APIs
+- Vitest tests and GitHub Actions CI
 - Desktop and 390px mobile browser verification
 
 Not implemented:
 
-- Database persistence, auth, save/share, or public build pages
-- Explore and product detail UI pages
-- Automated tests
+- Database persistence and auth
 - GLB model pipeline
-- Recommendation brute-force search
+- Live vendor pricing and availability
+- Manufacturer-sourced real catalog expansion
 
 ## Important Decisions
 
@@ -66,8 +71,8 @@ Not implemented:
 
 ## Next Major Steps
 
-1. Add focused calculation and compatibility tests.
-2. Add JSON export and a WebGL fallback state.
-3. Add Supabase/Prisma persistence and saved build pages.
-4. Add curated explore and product detail pages.
-5. Implement the recommendation engine over the seed catalog.
+1. Add Supabase/Prisma persistence and authenticated saved builds.
+2. Add WebGL fallback state.
+3. Expand catalog with real sourced parts and confidence metadata.
+4. Add controlled GLB asset ingestion and optimization scripts.
+5. Add live/manual price source records and scheduled refresh hooks.
