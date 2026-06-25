@@ -25,6 +25,7 @@ type BuildStore = {
   parts: BuildParts;
   activeCategory: ProductCategory;
   highlightedCategory?: ProductCategory;
+  selectedCategory?: ProductCategory;
   exploded: boolean;
   setGoal: (goal: BuildGoal) => void;
   setBudget: (budgetUsd: number) => void;
@@ -37,6 +38,8 @@ type BuildStore = {
   setPart: (category: ProductCategory, productId?: string) => void;
   setActiveCategory: (category: ProductCategory) => void;
   setHighlightedCategory: (category?: ProductCategory) => void;
+  selectCategory: (category: ProductCategory) => void;
+  clearSelectedCategory: () => void;
   toggleExploded: () => void;
   resetBuild: () => void;
 };
@@ -47,6 +50,7 @@ export const useBuildStore = create<BuildStore>((set) => ({
   budgetUsd: 450,
   parts: starterParts,
   activeCategory: "frame",
+  selectedCategory: undefined,
   exploded: false,
   setGoal: (goal) => set({ goal }),
   setBudget: (budgetUsd) => set({ budgetUsd }),
@@ -58,16 +62,28 @@ export const useBuildStore = create<BuildStore>((set) => ({
       parts: build.parts,
       activeCategory: "frame",
       highlightedCategory: undefined,
+      selectedCategory: undefined,
       exploded: false,
     }),
   setPart: (category, productId) =>
     set((state) => ({
       parts: { ...state.parts, [category]: productId },
+      activeCategory: category,
       highlightedCategory: category,
+      selectedCategory: category,
     })),
-  setActiveCategory: (activeCategory) => set({ activeCategory }),
+  setActiveCategory: (activeCategory) =>
+    set({ activeCategory, selectedCategory: activeCategory }),
   setHighlightedCategory: (highlightedCategory) =>
     set({ highlightedCategory }),
+  selectCategory: (category) =>
+    set({
+      activeCategory: category,
+      highlightedCategory: category,
+      selectedCategory: category,
+    }),
+  clearSelectedCategory: () =>
+    set({ highlightedCategory: undefined, selectedCategory: undefined }),
   toggleExploded: () => set((state) => ({ exploded: !state.exploded })),
   resetBuild: () =>
     set({
@@ -77,6 +93,7 @@ export const useBuildStore = create<BuildStore>((set) => ({
       parts: starterParts,
       activeCategory: "frame",
       highlightedCategory: undefined,
+      selectedCategory: undefined,
       exploded: false,
     }),
 }));

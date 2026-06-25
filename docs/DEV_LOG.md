@@ -311,3 +311,51 @@ Open questions:
 - Three.js currently emits dependency-level deprecation warnings in local dev;
   no app runtime error was observed.
 - Mobile touch controls still need real-device validation.
+
+## Entry 008
+
+Date: 2026-06-16
+
+Summary:
+
+- Added persistent 3D part selection: clicking a generated part focuses that
+  category visually and switches the parts catalog to the matching section.
+- Added a clear-focus control to exit isolated part inspection.
+- Smoothed exploded-view transitions with frame-based interpolation instead of
+  instant position jumps.
+- Added selected-part material isolation so focused parts stay bright while the
+  rest of the assembly fades back.
+- Added a community model import pipeline document and repository placeholder
+  folder for future curated GLB intake.
+- Surfaced model license and verification status on part detail pages.
+
+Files changed:
+
+- `src/store/useBuildStore.ts`
+- `src/components/builder/BuilderApp.tsx`
+- `src/components/three/DroneScene.tsx`
+- `src/app/parts/[id]/page.tsx`
+- `docs/MODEL_IMPORT_PIPELINE.md`
+- `public/models/community/.gitkeep`
+- `docs/DEV_LOG.md`
+- `docs/NEXT_STEPS.md`
+- `docs/CONTEXT.md`
+
+Key decisions:
+
+- Use existing React Three Fiber primitives for smooth motion instead of adding
+  an animation dependency.
+- Treat catalog selection and 3D selection as the same focused category so menu
+  and scene remain synchronized.
+- Start community models with curation, licensing, and optimization rules before
+  enabling arbitrary uploads.
+
+Bugs fixed:
+
+- Exploded view no longer snaps part positions instantly.
+
+Open questions:
+
+- Browser verification was blocked by the in-app browser security policy for
+  `127.0.0.1:3000` during this checkpoint.
+- The model upload/admin workflow still needs implementation.

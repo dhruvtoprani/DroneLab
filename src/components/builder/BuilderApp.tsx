@@ -7,11 +7,13 @@ import {
   CircleAlert,
   CircleCheck,
   Download,
+  Focus,
   FileJson,
   Layers3,
   RotateCcw,
   Save,
   Share2,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -422,6 +424,20 @@ export function BuilderApp() {
           </div>
 
           <div className="absolute right-4 top-4 z-10 flex gap-2">
+            {store.selectedCategory && (
+              <button
+                type="button"
+                onClick={store.clearSelectedCategory}
+                className="flex h-9 items-center gap-2 rounded-md border border-lime-300/25 bg-lime-300/10 px-3 text-xs text-lime-100 shadow-xl backdrop-blur-md transition hover:border-lime-300/45 hover:bg-lime-300/15"
+                aria-label={`Clear ${categoryLabels[store.selectedCategory]} focus`}
+              >
+                <Focus className="size-3.5" />
+                <span className="hidden sm:inline">
+                  {categoryLabels[store.selectedCategory]}
+                </span>
+                <X className="size-3" />
+              </button>
+            )}
             <button
               type="button"
               onClick={store.toggleExploded}
@@ -442,13 +458,21 @@ export function BuilderApp() {
               parts={store.parts}
               exploded={store.exploded}
               highlightedCategory={store.highlightedCategory}
+              selectedCategory={store.selectedCategory}
               onHighlight={store.setHighlightedCategory}
+              onSelectCategory={store.selectCategory}
             />
           </div>
 
-          {store.highlightedCategory && (
+          {(store.highlightedCategory || store.selectedCategory) && (
             <div className="pointer-events-none absolute bottom-24 left-1/2 z-10 -translate-x-1/2 rounded-full border border-lime-300/20 bg-black/55 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-lime-200 backdrop-blur-md">
-              Inspecting {store.highlightedCategory.replace("_", " ")}
+              {store.highlightedCategory
+                ? "Inspecting"
+                : "Focused"}{" "}
+              {(store.highlightedCategory ?? store.selectedCategory)?.replace(
+                "_",
+                " ",
+              )}
             </div>
           )}
 

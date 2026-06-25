@@ -52,6 +52,9 @@ Implemented:
 - Orbit, zoom, hover highlighting, and exploded view
 - Technical 3D scene polish: landing-pad floor rings, part labels, snap markers,
   standoffs, screw details, prop motion discs, and missing-part ghost outlines
+- Smooth exploded-view interpolation for selected part positions
+- Clickable 3D part focus: selecting a generated part isolates it visually and
+  switches the catalog to the matching category
 - WebGL unsupported-device fallback for the 3D viewport
 - Live part selection and mission profile controls
 - Builder viewport HUD with completion percentage, build status, and readiness
@@ -75,12 +78,14 @@ Implemented:
 - Durable saved-build create/read/update/duplicate through Prisma and Supabase
   Postgres when `DATABASE_URL` is configured
 - Vercel production has `DATABASE_URL` configured for Supabase persistence
+- Community model import policy documented in `docs/MODEL_IMPORT_PIPELINE.md`
+- `public/models/community/` exists as the local intake placeholder folder
 
 Not implemented:
 
 - Auth
 - Product catalog database seeding/import
-- GLB model pipeline
+- Automated GLB model import/optimization pipeline
 - Live vendor pricing and availability
 - Manufacturer-sourced real catalog expansion
 
@@ -95,6 +100,8 @@ Not implemented:
 - Keep all advanced simulation out of the MVP path.
 - Prefer product-experience improvements that clarify the current engineering
   model before adding new feature surfaces.
+- Community/imported models must pass license, scale, optimization, and
+  provenance checks before they can become runtime GLB assets.
 
 ## Known Risks
 
@@ -105,6 +112,8 @@ Not implemented:
 - Three.js emits local development deprecation warnings from dependencies, but
   the polished builder had no observed app runtime errors during browser smoke
   testing.
+- Browser verification for the part-selection checkpoint was blocked by the
+  in-app browser security policy for `127.0.0.1:3000`.
 - Saved builds still fall back to encoded share links in local/preview
   environments without `DATABASE_URL`.
 - The production database contains runtime saved builds, but products are still
@@ -115,6 +124,7 @@ Not implemented:
 1. Add database seed/import scripts for curated products and example builds.
 2. Add Supabase Auth and saved-build ownership.
 3. Expand catalog with real sourced parts and confidence metadata.
-4. Add controlled GLB asset ingestion and optimization scripts.
+4. Implement the controlled GLB import and optimization script from
+   `docs/MODEL_IMPORT_PIPELINE.md`.
 5. Add live/manual price source records and scheduled refresh hooks.
 6. Add browser coverage for WebGL-disabled and mobile touch states.

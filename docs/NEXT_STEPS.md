@@ -3,9 +3,9 @@
 ## Current Priority
 
 - [ ] Add database seed/import script for curated products and example builds.
+- [ ] Implement controlled community GLB import script from `docs/MODEL_IMPORT_PIPELINE.md`.
 - [ ] Add authenticated saved build ownership.
 - [ ] Expand the catalog with manufacturer-sourced, confidence-tagged real parts.
-- [ ] Add a controlled GLB ingestion/optimization script.
 
 ## Completed
 
@@ -27,6 +27,8 @@
 - [x] Apply Supabase production schema and verify durable saved-build APIs.
 - [x] Configure Vercel production `DATABASE_URL` for Supabase persistence.
 - [x] Polish builder visuals with viewport HUD, richer 3D scene labels, snap markers, and improved diagnostic panels.
+- [x] Add smooth exploded-view interpolation and clickable 3D part focus.
+- [x] Add community model import policy document and placeholder asset folder.
 
 ## Backlog
 
@@ -34,6 +36,7 @@
 - [ ] Add live/manual `price_sources` data model.
 - [ ] Add model asset records and thumbnails.
 - [ ] Add admin/import scripts for source curation.
+- [ ] Add a reviewed community model submission form after auth exists.
 
 ## Bugs
 

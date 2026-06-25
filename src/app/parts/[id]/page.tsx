@@ -101,6 +101,11 @@ export default async function PartPage({ params }: PartPageProps) {
                 <Row label="Last updated" value={product.lastUpdated} />
                 <Row label="Price mode" value={product.priceConfidence ?? "manual"} />
                 <Row label="Model mode" value={product.modelMode ?? "generated"} />
+                <Row label="Model license" value={product.modelLicense ?? "fallback"} />
+                <Row
+                  label="Model verified"
+                  value={product.modelVerified ? "yes" : "not yet"}
+                />
               </dl>
               {product.sourceUrl && (
                 <a
@@ -110,6 +115,21 @@ export default async function PartPage({ params }: PartPageProps) {
                   Open source <ExternalLink className="size-3" />
                 </a>
               )}
+            </div>
+
+            <div className="rounded-xl border border-sky-300/15 bg-sky-300/[0.035] p-4">
+              <p className="tech-label">Community model readiness</p>
+              <p className="mt-3 text-sm leading-6 text-zinc-400">
+                DroneLab can attach curated GLB assets when the source, license,
+                scale, and snap-point alignment are verified. Generated geometry
+                remains the fallback for every part.
+              </p>
+              <Link
+                href="/builder"
+                className="mt-4 inline-flex text-xs font-medium text-sky-200 hover:text-sky-100"
+              >
+                Test generated fallback in builder
+              </Link>
             </div>
 
             <div className="rounded-xl border border-white/8 bg-white/[0.025] p-4">
