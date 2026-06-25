@@ -1,5 +1,6 @@
 # DroneLab
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-dronelab--sooty.vercel.app-C7FF3D?style=for-the-badge&logo=vercel&logoColor=17111F)](https://dronelab-sooty.vercel.app)
 [![Product](https://img.shields.io/badge/Product-3D_Drone_Builder-C7FF3D?style=for-the-badge)](https://github.com/dhruvtoprani/DroneLab)
 [![Engineering](https://img.shields.io/badge/Engineering-Compatibility_Engine-7C5CFF?style=for-the-badge)](https://github.com/dhruvtoprani/DroneLab)
 [![Stack](https://img.shields.io/badge/Stack-Next.js_%2B_Three.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
@@ -9,7 +10,7 @@ DroneLab is a 3D FPV drone builder that helps a hobbyist, student team, or early
 
 The product turns drone configuration into a visual workflow: choose a mission goal, assemble parts in 3D, catch compatibility issues, estimate performance, and understand whether the build is safe, useful, and worth purchasing.
 
-**Links:** [Source repository](https://github.com/dhruvtoprani/DroneLab) · [Product requirements](docs/PRD.md) · [Current context](docs/CONTEXT.md) · [Next steps](docs/NEXT_STEPS.md) · [Architecture](#architecture) · [Local development](#local-development)
+**Links:** [Live demo](https://dronelab-sooty.vercel.app) · [Source repository](https://github.com/dhruvtoprani/DroneLab) · [Product requirements](docs/PRD.md) · [Current context](docs/CONTEXT.md) · [Next steps](docs/NEXT_STEPS.md) · [Architecture](#architecture) · [Local development](#local-development)
 
 ## Problem
 
@@ -64,6 +65,16 @@ The current MVP proves the core loop: choose a mission, assemble parts, validate
 6. Read compatibility warnings and suggested fixes.
 7. Copy a BOM, export CSV/JSON, save locally, or generate a shareable build summary.
 
+## Live Product
+
+The public deployment is available on Vercel:
+
+- [Open the deployed DroneLab demo](https://dronelab-sooty.vercel.app)
+- Start from a mission profile and budget
+- Explore the generated 3D builder
+- Swap parts and watch compatibility/performance update live
+- Export a BOM or shareable build summary
+
 ## Product Surface
 
 | Surface | Purpose |
@@ -87,6 +98,7 @@ The current MVP proves the core loop: choose a mission, assemble parts, validate
 | Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS |
 | 3D layer | React Three Fiber, Drei, Three.js |
 | Data layer | Curated JSON seed catalog, Prisma 7 schema, Supabase/Postgres-ready contract |
+| Deployment | Vercel production at `dronelab-sooty.vercel.app` |
 
 ## What Works
 
@@ -143,6 +155,7 @@ The MVP intentionally uses generated geometry and curated seed data before addin
 - **Data:** Curated JSON seed catalog
 - **Database contract:** Prisma 7 schema and SQL migration for Postgres
 - **Engineering engine:** Pure TypeScript calculation and compatibility modules
+- **Deployment:** Vercel
 
 ## Project Structure
 
@@ -212,7 +225,9 @@ The Postgres contract is already present:
 
 When `DATABASE_URL` is configured, `src/lib/server/buildRepository.ts` uses Prisma 7 with the Postgres driver adapter for durable saved-build CRUD. Without that env var, saved builds fall back to encoded share links so the app remains runnable in local and preview environments.
 
-## Deployment Readiness
+## Deploy
+
+Production URL: [https://dronelab-sooty.vercel.app](https://dronelab-sooty.vercel.app)
 
 DroneLab is structured as a standard Next.js application and can be deployed on Vercel once environment variables are configured.
 
@@ -223,8 +238,6 @@ DATABASE_URL=postgresql://...
 ```
 
 Without `DATABASE_URL`, the app still supports local saves, encoded share links, CSV export, JSON export, and public summary pages generated from share-link data.
-
-No public production URL is currently recorded in this repository.
 
 ## Limitations
 
