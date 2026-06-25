@@ -47,6 +47,7 @@ connect reliably.
 Implemented:
 
 - Landing page
+- Landing-page drone blueprint with CSS-animated spinning propellers
 - Three-panel builder
 - Generated frame, motors, propellers, battery, boards, camera, antenna, and payload
 - Orbit, zoom, hover highlighting, and exploded view
@@ -100,6 +101,8 @@ Not implemented:
 - Keep all advanced simulation out of the MVP path.
 - Prefer product-experience improvements that clarify the current engineering
   model before adding new feature surfaces.
+- Keep landing-page motion lightweight; CSS animation is preferred over loading
+  the full Three.js builder scene for the homepage hero.
 - Community/imported models must pass license, scale, optimization, and
   provenance checks before they can become runtime GLB assets.
 

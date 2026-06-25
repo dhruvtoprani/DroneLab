@@ -141,4 +141,22 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
   }
+
+  .propeller-spin {
+    animation: propeller-spin 0.42s linear infinite;
+    transform-origin: center;
+    will-change: transform;
+  }
+}
+
+@keyframes propeller-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .propeller-spin {
+    animation-duration: 1.8s;
+  }
 }

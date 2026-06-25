@@ -75,6 +75,32 @@ const exampleBuilds = [
   },
 ];
 
+function BlueprintRotor({
+  position,
+  delay,
+}: {
+  position: string;
+  delay: string;
+}) {
+  return (
+    <div
+      className={`absolute ${position} size-[27%] rounded-full border border-lime-300/20 bg-lime-300/[0.025] shadow-[0_0_60px_rgba(193,255,58,0.04)]`}
+    >
+      <div
+        className="propeller-spin absolute inset-[3%] rounded-full"
+        style={{ animationDelay: delay }}
+      >
+        <div className="absolute inset-[7%] rounded-full border border-lime-300/10 bg-lime-300/[0.025] blur-[1px]" />
+        <div className="absolute left-1/2 top-1/2 h-[11%] w-[95%] -translate-x-1/2 -translate-y-1/2 rotate-12 rounded-full bg-lime-300/75 shadow-[0_0_22px_rgba(193,255,58,0.25)]" />
+        <div className="absolute left-1/2 top-1/2 h-[11%] w-[95%] -translate-x-1/2 -translate-y-1/2 rotate-[102deg] rounded-full bg-lime-300/55 shadow-[0_0_22px_rgba(193,255,58,0.18)]" />
+        <div className="absolute left-1/2 top-1/2 h-[46%] w-[46%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-lime-300/10" />
+      </div>
+      <div className="absolute left-1/2 top-1/2 size-[24%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-zinc-400 bg-zinc-700 shadow-xl" />
+      <div className="absolute left-1/2 top-1/2 size-[10%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-200/80" />
+    </div>
+  );
+}
+
 function DroneBlueprint() {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[560px]">
@@ -83,20 +109,10 @@ function DroneBlueprint() {
       <div className="absolute left-1/2 top-1/2 h-[1px] w-[78%] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gradient-to-r from-transparent via-zinc-500 to-transparent" />
       <div className="absolute left-1/2 top-1/2 h-[1px] w-[78%] -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-gradient-to-r from-transparent via-zinc-500 to-transparent" />
 
-      {[
-        "left-[13%] top-[13%]",
-        "right-[13%] top-[13%]",
-        "bottom-[13%] left-[13%]",
-        "bottom-[13%] right-[13%]",
-      ].map((position) => (
-        <div
-          key={position}
-          className={`absolute ${position} size-[27%] rounded-full border border-lime-300/20 bg-lime-300/[0.025] shadow-[0_0_60px_rgba(193,255,58,0.04)]`}
-        >
-          <div className="absolute left-1/2 top-1/2 h-[12%] w-[95%] -translate-x-1/2 -translate-y-1/2 rotate-12 rounded-full bg-lime-300/75 shadow-[0_0_22px_rgba(193,255,58,0.25)]" />
-          <div className="absolute left-1/2 top-1/2 size-[24%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-zinc-400 bg-zinc-700 shadow-xl" />
-        </div>
-      ))}
+      <BlueprintRotor position="left-[13%] top-[13%]" delay="-0.06s" />
+      <BlueprintRotor position="right-[13%] top-[13%]" delay="-0.18s" />
+      <BlueprintRotor position="bottom-[13%] left-[13%]" delay="-0.28s" />
+      <BlueprintRotor position="bottom-[13%] right-[13%]" delay="-0.36s" />
 
       <div className="absolute left-1/2 top-1/2 h-[27%] w-[34%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/15 bg-[#171d21] shadow-2xl">
         <div className="absolute inset-[12%] rounded-xl border border-white/8 bg-[#0e1316]" />

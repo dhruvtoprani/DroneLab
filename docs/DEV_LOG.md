@@ -359,3 +359,36 @@ Open questions:
 - Browser verification was blocked by the in-app browser security policy for
   `127.0.0.1:3000` during this checkpoint.
 - The model upload/admin workflow still needs implementation.
+
+## Entry 009
+
+Date: 2026-06-25
+
+Summary:
+
+- Added spinning propeller animation to the landing-page drone blueprint.
+- Added a reusable CSS rotor animation with a slower reduced-motion fallback.
+- Kept the landing page lightweight by using CSS instead of loading the 3D scene
+  on the homepage.
+
+Files changed:
+
+- `src/app/page.tsx`
+- `src/app/globals.css`
+- `docs/DEV_LOG.md`
+- `docs/NEXT_STEPS.md`
+- `docs/CONTEXT.md`
+
+Key decisions:
+
+- Animate only the propeller elements while keeping motor hubs readable.
+- Use staggered animation delays so the hero preview feels alive without adding
+  client-side JavaScript.
+
+Bugs fixed:
+
+- None.
+
+Open questions:
+
+- None.

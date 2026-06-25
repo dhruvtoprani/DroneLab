@@ -29,6 +29,7 @@
 - [x] Polish builder visuals with viewport HUD, richer 3D scene labels, snap markers, and improved diagnostic panels.
 - [x] Add smooth exploded-view interpolation and clickable 3D part focus.
 - [x] Add community model import policy document and placeholder asset folder.
+- [x] Add spinning propellers to the landing-page drone preview.
 
 ## Backlog
 
